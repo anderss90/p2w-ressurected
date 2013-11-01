@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00000000</color>
+    
+    <color name="applicationBackgroundColor">#000000</color>
+    
+    <color name="itemBackgroundColor">#d9d9d9</color>    
+    
+    <color name="itemFocusedColor">#393939</color>
+    
+    <color name="standardTextColor">#000000</color>
+    
+    <color name="focusedTextColor">#f1f1f1</color>
+</resources>
