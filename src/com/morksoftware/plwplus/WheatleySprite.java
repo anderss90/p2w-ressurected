@@ -99,7 +99,7 @@ public class WheatleySprite extends Sprite {
     private Context mCtx;
 
 	// Settings
-	private int mTapAction = WHEATLEY_TAP_ACTION_Y;
+	private int mTapAction = WHEATLEY_TAP_ACTION_YZ;
 	
 
 	@Override
@@ -341,7 +341,7 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	private void updatePositionX() {		
-		if(Math.abs(mNewPositionX - mLastPositionX) < mAccelZone*2 && mSpeedX < 2*WHEATLEY_MINIMUM_SPEED) {;
+		if(Math.abs(mNewPositionX - mLastPositionX) < mAccelZone*2 && mSpeedX < 2*WHEATLEY_MINIMUM_SPEED) {
 			mAccelZone = Math.abs(mNewPositionX - mPositionX)/2;
 		}
 		

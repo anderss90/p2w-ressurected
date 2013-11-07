@@ -1,5 +1,8 @@
 package com.morksoftware.plwplus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -45,6 +48,92 @@ public class BackgroundBitmapManager {
 		
 		mDisplay = ((WindowManager) mCtx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 	}
+		
+	
+	public Bitmap loadScaledBitmapFromPath(String path, boolean isPreview) {
+		// Fetch adjusted metrics
+		updateWallpaperMetrics(isPreview);
+		
+		// Calculate the ratio between the the asset width and desired width 
+		float widthRatio = RAW_ASSET_WIDTH / mDesiredWidth;
+		
+		// Calculate the ratio between the asset height and the desired height 
+		float heightRatio = RAW_ASSET_HEIGHT / mDesiredHeight;
+		
+		// This will be our scaling factor
+		int scalingFactor = (int) Math.min(widthRatio, heightRatio);
+		
+		Log.i(TAG, "scalingFactor: " + Integer.toString(scalingFactor));
+		
+		// Get an instance of BitmapFactory.Options to handle decoding options
+		BitmapFactory.Options  bmOptions = new BitmapFactory.Options();
+		
+		// Prevent Android from loading a density specific bitmap
+		bmOptions.inScaled = false;
+		
+		// Only decode the metric information of the bitmap (No pixels loaded)
+		bmOptions.inJustDecodeBounds = true;
+		
+		// If the scaling factor is greater then 1, a scaled bitmap will be loaded.
+		bmOptions.inSampleSize = scalingFactor;
+					
+		// Sample the asset, without loading the pixels
+		BitmapFactory.decodeFile(path, bmOptions);
+		
+		// Get the height of the sampled asset
+		int tempBitmapHeight = bmOptions.outHeight;
+		
+		// Get the width of the sampled asset
+		int tempBitmapWidth = bmOptions.outWidth;
+		
+		Log.i(TAG, "sampledBitmapWidth: " + Integer.toString(tempBitmapWidth) + ", sampledBitmapHeight: " + Integer.toString(tempBitmapHeight));
+		
+		
+		Bitmap returnBitmap = null;		
+
+		// If the raw asset metrics matchs the desired metrics, we can just decode the Bitmap as is.
+		if(tempBitmapHeight == mDesiredHeight && tempBitmapWidth == mDesiredWidth) {
+			return returnBitmap = BitmapFactory.decodeFile(path);
+		}		
+		// We need to scale the bitmap
+		else {				
+			
+			// Calculate position of the cropped Bitmap inside the raw asset.
+			int left = (tempBitmapWidth / 2) - (mDesiredWidth / 2);
+			int top = (tempBitmapHeight / 2) - (mDesiredHeight / 2);
+			int right = left + mDesiredWidth;
+			int bottom = top + mDesiredHeight;
+				
+			// A decode used to decode a region of an image
+			BitmapRegionDecoder regionDecoder = null;
+			
+			try {
+				// Open the asset as an InputStream.
+				File file = new File(path);			
+				FileInputStream inputStream = new FileInputStream(file);
+				
+				regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			if(regionDecoder != null) {
+				
+				// This time we want to decode completely (With pixels)
+				bmOptions.inJustDecodeBounds = false;
+							
+				Log.i(TAG, "loadScaledBitmap() - Background scaled with BitmapRegionDecoder");
+				
+				// Decode the asset
+				returnBitmap = regionDecoder.decodeRegion(new Rect(left, top, right, bottom), bmOptions);
+			}			
+		
+			Log.i(TAG, "Scaled width: " + Integer.toString(returnBitmap.getWidth()) + ", scaled height: " + Integer.toString(returnBitmap.getHeight()));
+
+			return returnBitmap;
+		}
+	}
 	
 	/**
 	 * A highly memory efficient Bitmap loader. Returns a 
@@ -55,7 +144,7 @@ public class BackgroundBitmapManager {
 	 * 
 	 * @return A scaled Bitmap
 	 */
-	public Bitmap loadScaledBitmap(int resId, boolean isPreview) {
+	public Bitmap loadScaledBitmapFromResId(int resId, boolean isPreview) {
 		
 		// Fetch adjusted metrics
 		updateWallpaperMetrics(isPreview);
@@ -82,7 +171,7 @@ public class BackgroundBitmapManager {
 		
 		// If the scaling factor is greater then 1, a scaled bitmap will be loaded.
 		bmOptions.inSampleSize = scalingFactor;
-			
+					
 		// Sample the asset, without loading the pixels
 		BitmapFactory.decodeResource(mCtx.getResources(), resId, bmOptions);
 		

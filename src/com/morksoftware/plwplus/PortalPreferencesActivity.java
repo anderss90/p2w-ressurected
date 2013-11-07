@@ -7,9 +7,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PortalPreferencesActivity extends Activity implements OnSharedPreferenceChangeListener, OnClickListener {
 	
@@ -87,5 +85,4 @@ public class PortalPreferencesActivity extends Activity implements OnSharedPrefe
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {		
 	}
-	
 }

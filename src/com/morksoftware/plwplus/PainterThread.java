@@ -157,8 +157,10 @@ public class PainterThread extends Thread {
 			
 			Log.i("TAG", Integer.toString(backgroundId));
 			
+			mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromPath("/mnt/sdcard/DCIM/Camera/IMG_20130820_214915.jpg", mPreview);
+			
 			// Always init background image
-			mBackgroundBitmap = mBackgroundManager.loadScaledBitmap(backgroundId, mPreview);
+			//mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromResId(backgroundId, mPreview);
 		}
 		
 		// If INIT_ALL, init Sprite too
