@@ -57,7 +57,7 @@ public class PortalWallpaperService extends WallpaperService {
 		private int mPixelOffset;
 		
 		// Preference object
-		PortalPreferences mPrefs;
+		PrefsHelper mPrefs;
 				
 		@Override
 		public void onCreate(SurfaceHolder surfaceHolder) {	
@@ -68,18 +68,18 @@ public class PortalWallpaperService extends WallpaperService {
 			
 			Log.i(LOG, mID + " - onCreate");
 			
-			/* DEBUG DONE*/			
+			/* DEBUG DONE*/		
+			mPrefs = new PrefsHelper(getApplicationContext());
+			mPrefs.setDefaultPreferences(getApplicationContext());
+			mPrefs.registerOnSharedPrefListener(this);		
 			mThread = new PainterThread(surfaceHolder, getApplicationContext(), isPreview());
-			mPrefs = new PortalPreferences(getApplicationContext());
-			
-			mPrefs.registerOnSharedPrefListener(this);			
 		}
 
 		@Override
 		public void onOffsetsChanged(float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset) {
 			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
 			
-			Log.i(LOG, "onOffsetsChanged");
+			//Log.i(LOG, "onOffsetsChanged");
 						
 			if(mOffset != xOffset || mOffsetStep != xOffsetStep || mPixelOffset != xPixelOffset) {
 				mOffset = xOffset;

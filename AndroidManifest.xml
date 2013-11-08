@@ -25,20 +25,11 @@
         </service>
         
         <activity 
-            android:name=".PortalPreferencesActivity"
+            android:name=".PrefsMainMenu"
             android:exported="true">
         </activity>
-        
         <activity 
-            android:name=".PreferenceModeMenu">            
-        </activity>
-        
-        <activity 
-            android:name=".PreferenceBackgroundMenu">            
-        </activity>
-        
-        <activity 
-            android:name=".PreferenceFeatureMenu">            
+            android:name=".PrefsIncludedBackgrounds">            
         </activity>
     </application>
 

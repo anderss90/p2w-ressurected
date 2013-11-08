@@ -37,8 +37,12 @@ public class PainterThread extends Thread {
 	private int mSpriteInit = INIT_AWAITING;
 	
 	// Preferences
-	private PortalPreferences mPrefs;
-		
+	private PrefsHelper mPrefs;
+	private String mBackgroundSource;
+	private String mBackgroundPath;
+	private int mBackgroundID;
+	private String wallpaperMode;
+	
 	// Screen sizes and offset
 	private int mSurfaceWidth;
 	private int mSurfaceHeight;
@@ -67,12 +71,12 @@ public class PainterThread extends Thread {
 		// Bind isPreview
 		mPreview = isPreview;
 				
-		// Initialize PortalPreferences
-		mPrefs = new PortalPreferences(ctx);
+		// Initialize PrefsHelper
+		mPrefs = new PrefsHelper(ctx);
 		
 		if(mPrefs.getFirstRun()) {
 			// If this is the first run, load default values
-			mPrefs.setDefaultPreferences();
+			mPrefs.setDefaultPreferences(ctx);
 		}
 		
 		// This is our background manager
@@ -138,16 +142,15 @@ public class PainterThread extends Thread {
 	 */
 	private void initResources() {		
 		// What shall we initialize?
-		int wallpaperMode = mPrefs.getWallpaperMode();	
-		int backgroundId = mPrefs.getWallpaperBackground();
-		
-		if(backgroundId == PortalPreferences.WALLPAPER_BACKGROUND_DEFAULT) {
-			if(wallpaperMode == PortalPreferences.WALLPAPER_MODE_LABS) {
-				backgroundId = R.drawable.raw_background_3;
-			}
-			else {
-				backgroundId = R.drawable.raw_space_background_1;
-			}
+		wallpaperMode = mPrefs.getWallpaperMode();
+		mBackgroundSource= mPrefs.getBackgroundSource();
+		if (mBackgroundSource.equals(mPrefs.PREF_BACKGROUND_SOURCE_INCLUDED)){
+			mBackgroundID = mPrefs.getWallpaperBackgroundID();
+			mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromResId(mBackgroundID, mPreview);
+		}
+		else {
+			mBackgroundPath = mPrefs.getWallpaperBackgroundPath();
+			mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromPath(mBackgroundPath, mPreview);
 		}
 		
 		if(mBackgroundInit == INIT_AWAITING) {
@@ -155,21 +158,20 @@ public class PainterThread extends Thread {
 			
 			mBackgroundInit = INIT_DONE;
 			
-			Log.i("TAG", Integer.toString(backgroundId));
+			Log.i("TAG", Integer.toString(mBackgroundID));
 			
-			mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromPath("/mnt/sdcard/DCIM/Camera/IMG_20130820_214915.jpg", mPreview);
+			//mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromPath("/mnt/sdcard/DCIM/Camera/IMG_20130820_214915.jpg", mPreview);
 			
 			// Always init background image
-			//mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromResId(backgroundId, mPreview);
 		}
-		
+			
 		// If INIT_ALL, init Sprite too
 		if(mSpriteInit == INIT_AWAITING && !mPreview) {	
 			
 			mSpriteInit = INIT_DONE;
 			
 			Log.i("tag", "Loading Sprite...");
-			if(wallpaperMode == PortalPreferences.WALLPAPER_MODE_LABS) {				
+			if(wallpaperMode.equals(PrefsHelper.PREF_WALLPAPER_MODE_LABS)) {				
 				// Init Wheatley
 				mSprite = new WheatleySprite();
 				mSprite.initResources(mCtx, mSurfaceWidth, mSurfaceHeight);				
@@ -201,11 +203,11 @@ public class PainterThread extends Thread {
 	}	
 	
 	public void notifyPreferenceChange(String key) {
-		if(key.equalsIgnoreCase(PortalPreferences.PREF_WALLPAPER_BACKGROUND)) {
+		if(key.equalsIgnoreCase(PrefsHelper.PREF_LABS_BACKGROUND) || key.equalsIgnoreCase(PrefsHelper.PREF_SPACE_BACKGROUND)) {
 			Log.i(LOG, "Background pref change");
 			mBackgroundInit = INIT_AWAITING;
 		}
-		else if(key.equalsIgnoreCase(PortalPreferences.PREF_WALLPAPER_MODE)) {		
+		else if(key.equalsIgnoreCase(PrefsHelper.PREF_WALLPAPER_MODE)) {		
 			// Initialize new background and Sprite
 			Log.i(LOG, "Sprite pref change");
 			

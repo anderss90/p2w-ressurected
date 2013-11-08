@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+	<string-array name="pref_modes_entries">
+	    <item>Wheatley</item>
+	  <item>Space Core</item>
+	</string-array>
+	<string-array name="pref_modes_entry_values">
+	  <item>Labs</item>
+	  <item>Space</item>
+	</string-array>
+	
+	
+	<string-array name="pref_labs_background_source_entries">
+	  <item>Included backgrounds</item>
+	  <item>User Gallery</item>
+	</string-array>
+	<string-array name="pref_labs_background_source_values">
+	  <item>included</item>
+	  <item>gallery</item>
+	</string-array>
+	
+	<string-array name="pref_space_background_source_entries">
+	  <item>Included in wallpaper</item>
+	  <item>User Gallery</item>
+	</string-array>
+	<string-array name="pref_space_background_source_values">
+	  <item>included</item>
+	  <item>gallery</item>
+	</string-array>
+	
+	<string-array name="pref_labs_position_entries">
+	    <item>Left</item>
+	    <item>Right</item>
+	    <item>Both</item>
+	</string-array>
+	<string-array name="pref_labs_position_values">
+	    <item>Left</item>
+	    <item>Right</item>
+	    <item>Both</item>
+	</string-array>
+	
+	<string-array name="pref_labs_random_movement_interval_entries">
+	    <item>Every second</item>
+	    <item>Every 5 seconds</item>
+	    <item>Every 10 seconds</item>
+	    <item>Every 20 seconds</item>
+	</string-array>
+	<string-array name="pref_labs_random_movement_interval_values">
+	    <item>1</item>
+	    <item>5</item>
+	    <item>10</item>
+	    <item>20</item>
+	</string-array>
+	
+	<string-array name="pref_labs_speed_entries">
+	    <item>25%</item>
+	    <item>50%</item>
+	    <item>75%</item>
+	    <item>100%</item>
+	</string-array>
+	<string-array name="pref_labs_speed_values">
+	    <item>25</item>
+	    <item>50</item>
+	    <item>75</item>
+	    <item>100</item>
+	</string-array>
+	
+	<string-array name="pref_labs_fps_entries">
+	    <item>10</item>
+	    <item>20</item>
+	    <item>30</item>
+	    <item>40</item>
+	</string-array>
+	<string-array name="pref_labs_fps_values">
+	    <item>10</item>
+	    <item>20</item>
+	    <item>30</item>
+	    <item>40</item>
+	</string-array>
+	
+		<string-array name="pref_space_speed_entries">
+	    <item>25%</item>
+	    <item>50%</item>
+	    <item>75%</item>
+	    <item>100%</item>
+	</string-array>
+	<string-array name="pref_space_speed_values">
+	    <item>25</item>
+	    <item>50</item>
+	    <item>75</item>
+	    <item>100</item>
+	</string-array>
+	
+	<string-array name="pref_space_fps_entries">
+	    <item>10</item>
+	    <item>20</item>
+	    <item>30</item>
+	    <item>40</item>
+	</string-array>
+	<string-array name="pref_space_fps_values">
+	    <item>10</item>
+	    <item>20</item>
+	    <item>30</item>
+	    <item>40</item>
+	</string-array>
+	
+	
+
+    
+</resources>

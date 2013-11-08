@@ -127,9 +127,10 @@ public class BackgroundBitmapManager {
 				
 				// Decode the asset
 				returnBitmap = regionDecoder.decodeRegion(new Rect(left, top, right, bottom), bmOptions);
+				Log.i(TAG, "Scaled width: " + Integer.toString(returnBitmap.getWidth()) + ", scaled height: " + Integer.toString(returnBitmap.getHeight()));
 			}			
 		
-			Log.i(TAG, "Scaled width: " + Integer.toString(returnBitmap.getWidth()) + ", scaled height: " + Integer.toString(returnBitmap.getHeight()));
+			
 
 			return returnBitmap;
 		}
@@ -221,9 +222,10 @@ public class BackgroundBitmapManager {
 				
 				// Decode the asset
 				returnBitmap = regionDecoder.decodeRegion(new Rect(left, top, right, bottom), bmOptions);
+				Log.i(TAG, "Scaled width: " + Integer.toString(returnBitmap.getWidth()) + ", scaled height: " + Integer.toString(returnBitmap.getHeight()));
 			}			
 		
-			Log.i(TAG, "Scaled width: " + Integer.toString(returnBitmap.getWidth()) + ", scaled height: " + Integer.toString(returnBitmap.getHeight()));
+			
 
 			return returnBitmap;
 		}

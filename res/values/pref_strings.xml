@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PrefTesting</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    
+    <string name="pref_screen_mode">pref_screen_mode</string>
+    <string name="pref_screen_space">pref_screen_space</string>
+    <string name="pref_screen_labs">pref_screen_labs</string>
+    
+    <string name="pref_mode_title">Wallpaper mode</string>
+    <string name="pref_mode_dialog">Select wallpaper mode</string>
+    <string name="pref_mode_summary">Wheatley or Space Core</string>
+    
+    <string name="pref_category_space">Preferences for mode: Space Core</string>
+    <string name="pref_category_labs">Preferences for mode: Wheatley</string>
+    
+    <string name="pref_labs_background_source_title">Background</string>
+    <string name="pref_labs_background_source_dialog">Select background from</string>
+    <string name="pref_labs_background_source_summary">Select wallpaper background</string>
+    
+    <string name="pref_space_background_source_title">Background source</string>
+    <string name="pref_space_background_source_dialog">Background source</string>
+    
+    <string name="pref_labs_position_title">Screen position</string>
+    <string name="pref_labs_position_summary">Where on the screen Wheatley will stay</string>
+    <string name="pref_labs_position_dialog">Select Wheatleys screen position</string>
+    
+    
+    <string name="pref_labs_random_movement_checkbox_title">Restlessness</string>
+   	 <string name="pref_labs_random_movement_checkbox_summary">Wheatley will move around</string>
+   	 
+   	 <string name="pref_labs_random_movement_interval_title">Restlessness level</string>
+   	 <string name="pref_labs_random_movement_interval_dialog">Wheatley moves:</string>
+   	 <string name="pref_labs_random_movement_interval_summary">How long Wheatley will wait before moving</string>
+    
+    <string name="pref_labs_sound_title">Enable Sound</string>
+	<string name="pref_labs_sound_summary">Wheatley speaks when tapped</string>
+	
+	 <string name="pref_labs_speed_title">Movement speed</string>
+   	 <string name="pref_labs_speed_dialog">Select movement speed</string>
+   	 <string name="pref_labs_speed_summary">Wheatleys movement speed</string>
+   	 
+   	 <string name="pref_labs_fps_title">Performance</string>
+   	 <string name="pref_labs_fps_dialog">Frames per second</string>
+   	 
+   	 <string name="pref_space_sound_title">Enable Sound</string>
+	<string name="pref_space_sound_summary">Space Core speaks when tapped</string>
+	
+	 <string name="pref_space_speed_title">Movement speed</string>
+   	 <string name="pref_space_speed_dialog">Select movement speed</string>
+   	 <string name="pref_labs_speed_summary">Space Core\'s movement speed</string>
+   	 <!-- 
+   	 <string name="pref_space_fps_title">Performance</string>
+   	 <string name="pref_space_fps_dialog">Frames per second</string>
+   	  -->
+   	 <string name="pref_save_button">Save and close</string>
+   	  
+</resources>
