@@ -70,7 +70,6 @@ public class PortalWallpaperService extends WallpaperService {
 			
 			/* DEBUG DONE*/		
 			mPrefs = new PrefsHelper(getApplicationContext());
-			mPrefs.setDefaultPreferences(getApplicationContext());
 			mPrefs.registerOnSharedPrefListener(this);		
 			mThread = new PainterThread(surfaceHolder, getApplicationContext(), isPreview());
 		}
@@ -189,7 +188,7 @@ public class PortalWallpaperService extends WallpaperService {
 
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-			mThread.notifyPreferenceChange(key);
+			if(mThread!=null) mThread.notifyPreferenceChange(key);
 		}
 	}
 }

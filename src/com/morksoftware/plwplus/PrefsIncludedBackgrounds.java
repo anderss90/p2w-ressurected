@@ -199,8 +199,12 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		//tegner bilder selv. Innebygde laster hele full HD-bildet -_-
 		    		BitmapFactory.Options  bmOptions = new BitmapFactory.Options();
 		    		bmOptions.inScaled=true;
-		    		bmOptions.inDensity=100;
-		    		bmOptions.inTargetDensity=25;
+		    		//bmOptions.inDensity=100;
+		    		//bmOptions.inTargetDensity=25;
+		    		int sourceImageWidth=1920;
+		    		int scaleFactor= (int)1920/mDisplay.getWidth();
+		    		Log.i("PrefsInclBGs","scaleFactor: "+scaleFactor);
+		    		bmOptions.inSampleSize=scaleFactor;
 		    		Bitmap bitmap = BitmapFactory.decodeResource(mCtx.getResources(), mPics[position], bmOptions);
 		    		iv.setImageBitmap(bitmap);
 		    		

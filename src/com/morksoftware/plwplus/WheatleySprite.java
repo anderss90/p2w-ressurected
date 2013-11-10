@@ -441,7 +441,7 @@ public class WheatleySprite extends Sprite {
 		boolean doStalker = true; // Option
 		
 		if(!mRandom && doStalker && (mOffsetX%mOffsetStepX == 0 || mPixelOffsetX % (mOffsetStepX * mScreenWidth) == 0) && mLastStalkerOffset != mOffsetX   && mPositionY == mDownPositionY) {
-			Log.i("doStalker", "Stalking");
+			//Log.i("doStalker", "Stalking");
 			if(mPositionX <= 0+5 || (mPositionX <= mScreenWidth-5 && !mDirectionX)) {	
 				setNewPositionX(0, true);
 			}		
@@ -468,7 +468,7 @@ public class WheatleySprite extends Sprite {
 
 	@Override
 	public void doWallpaperScroll(float xOffset, float xOffsetStep,	int xPixelOffset, int screenWidth) {
-		Log.i("WallpaperScroll", "xOffset: " + Float.toString(xOffset) + ", xOffsetStep: " + Float.toString(xOffsetStep) + ", xPixelOffset: " + Integer.toString(xPixelOffset));
+		//Log.i("WallpaperScroll", "xOffset: " + Float.toString(xOffset) + ", xOffsetStep: " + Float.toString(xOffsetStep) + ", xPixelOffset: " + Integer.toString(xPixelOffset));
 		
 		if(!mFirstRun) {			
 			mPositionX += (int) Math.ceil((screenWidth) * ((mOffsetX-xOffset)/xOffsetStep));

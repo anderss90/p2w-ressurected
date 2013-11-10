@@ -43,6 +43,7 @@ public class PrefsMainFragment extends PreferenceFragment implements OnSharedPre
     	
         // Load the preferences from an XML resource
         pref_mode = mPrefs.getWallpaperMode();
+        Log.i("PrefsMainFragment","OnCreate");
         addPreferencesFromResource(R.xml.prefs_main_menu);
         if(pref_mode.equals("Space")){
         	addPreferencesFromResource(R.xml.pref_space_mode);
@@ -74,8 +75,11 @@ public class PrefsMainFragment extends PreferenceFragment implements OnSharedPre
 		if (key.equals("pref_mode")){
 			preference_screen = (PreferenceScreen) getPreferenceScreen();
         	//Log.i("onSharedPrefsChanged:" ,preference_screen.getKey());
-        	preference_screen.removeAll();
-        	
+        	try{preference_screen.removeAll();
+        	}catch(NullPointerException e){
+        		Toast.makeText(getActivity(), "NPE in getPrefScreen",Toast.LENGTH_SHORT);
+        		e.printStackTrace();
+        	}
         	addPreferencesFromResource(R.xml.prefs_main_menu);
 			String pref_mode = mPrefs.getWallpaperMode();
 			if(pref_mode.equals("Space")){

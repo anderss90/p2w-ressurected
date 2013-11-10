@@ -79,6 +79,9 @@ public class PainterThread extends Thread {
 			mPrefs.setDefaultPreferences(ctx);
 		}
 		
+		//DEBUGGING
+		mPrefs.setDefaultPreferences(ctx);
+		
 		// This is our background manager
 		mBackgroundManager = new BackgroundBitmapManager(ctx);
 		

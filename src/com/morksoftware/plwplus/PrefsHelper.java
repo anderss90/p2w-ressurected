@@ -36,7 +36,6 @@ public class PrefsHelper {
 	public PrefsHelper(Context ctx) {
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		
-		if (getFirstRun()) setDefaultPreferences(ctx);
 	}
 	
 	public String getBackgroundSource(){
@@ -182,7 +181,7 @@ public class PrefsHelper {
 		
 		
 		Editor edit = mPrefs.edit();
-		edit.clear();
+		//edit.clear();
 		edit.putBoolean(PREF_FIRST_RUN, false);	
 		edit.commit();
 		

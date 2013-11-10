@@ -321,7 +321,7 @@ public class SpaceCoreSprite extends Sprite {
                         mLastDistanceUpdateTime = mCurrentTime;
                         mLeftAction=true;
                     }
-                    Log.i("side=", "Left: ");
+                    //Log.i("side=", "Left: ");
                 }
                 if (mPositionX +mSpriteWidth > mRightBoundry && !mRightAction){
                     if (Math.sin(mAngle) < 0) {
@@ -336,7 +336,7 @@ public class SpaceCoreSprite extends Sprite {
                         mLastDistanceUpdateTime = mCurrentTime;
                         mRightAction=true;
                     }
-                    Log.i("side=", "Right: ");
+                    //Log.i("side=", "Right: ");
                 }
                 if (mPositionY < mTopBoundry && !mTopAction) {
                     if(Math.cos(mAngle) <0) {
@@ -351,7 +351,7 @@ public class SpaceCoreSprite extends Sprite {
                         mLastDistanceUpdateTime = mCurrentTime;
                         mTopAction=true;
                     }
-                    Log.i("side=", "Top: ");
+                    //Log.i("side=", "Top: ");
                 }
                 if (mPositionY+mSpriteHeigth > mBottomBoundry && !mBottomAction) {
                     if(Math.cos(mAngle) < 0) {
@@ -366,7 +366,7 @@ public class SpaceCoreSprite extends Sprite {
                         mLastDistanceUpdateTime = mCurrentTime;
                         mBottomAction=true;
                     }
-                    Log.i("side=", "Bottom: ");
+                    //Log.i("side=", "Bottom: ");
                 }
                 if (mPositionY+mSpriteHeigth > mTopBoundry) {
                     mTopAction=false;
