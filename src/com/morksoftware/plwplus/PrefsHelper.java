@@ -21,7 +21,7 @@ public class PrefsHelper {
 	public static final int PREF_SPACE_BACKGROUND_DEFAULT_ID = R.drawable.raw_space_background_1;
 	public static final String PREF_LABS_BACKGROUND = "pref_labs_background";
 	public static final String PREF_LABS_BACKGROUND_DEFAULT_PATH = "def";
-	public static final int PREF_LABS_BACKGROUND_DEFAULT_ID = R.drawable.labs_raw_background_3;
+	public static final int PREF_LABS_BACKGROUND_DEFAULT_ID = R.drawable.labs_raw_background_3_fix;
 	public static final String PREF_LABS_BACKGROUND_SOURCE = "pref_labs_background_source";
 	public static final String PREF_SPACE_BACKGROUND_SOURCE = "pref_space_background_source";
 	public static final String PREF_BACKGROUND_SOURCE_INCLUDED = "included";
@@ -36,6 +36,35 @@ public class PrefsHelper {
 	public PrefsHelper(Context ctx) {
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		
+	}
+	
+	public String getWheatleySnapPosition(){
+		return mPrefs.getString("pref_labs_position","Both");
+	}
+	public int getMovementSpeed(){
+		if (getWallpaperMode().equals("Space")){
+			return Integer.parseInt(mPrefs.getString("pref_space_speed","50"));
+		}
+		else{
+			return Integer.parseInt(mPrefs.getString("pref_labs_speed","50"));
+		}
+	}
+	
+	public boolean getEnableRandomMovement(){
+		return mPrefs.getBoolean("pref_labs_random_movement_checkbox", true);
+	}
+	
+	public int getRandomMovementInterval(){
+			return Integer.parseInt(mPrefs.getString("pref_labs_random_movement_interval","10"));
+	} 
+	
+	public boolean getEnableSound(){
+		if (getWallpaperMode().equals("Space")){
+			return mPrefs.getBoolean("pref_space_sound",true);
+		}
+		else{
+			return mPrefs.getBoolean("pref_labs_sound",true);
+		}
 	}
 	
 	public String getBackgroundSource(){
@@ -184,7 +213,9 @@ public class PrefsHelper {
 		//edit.clear();
 		edit.putBoolean(PREF_FIRST_RUN, false);	
 		edit.commit();
-		
+		setBackgroundSource(PREF_BACKGROUND_SOURCE_DEFAULT);
+		setWallpaperMode(PREF_WALLPAPER_MODE_DEFAULT);
+		setWallpaperBackgroundID(PREF_LABS_BACKGROUND_DEFAULT_ID);
 		PreferenceManager.setDefaultValues(ctx, R.xml.prefs_main_menu, false);
 		Log.i("Prefshelper","setDefaultPreferences");
 	}

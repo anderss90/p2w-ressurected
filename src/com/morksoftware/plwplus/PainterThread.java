@@ -3,6 +3,7 @@ package com.morksoftware.plwplus;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -49,7 +50,14 @@ public class PainterThread extends Thread {
 	private int mPixelOffset;
 	private float mOffset;
 	private float mOffsetStep;
+	Matrix mScaleMatrix = new Matrix();
+	float translation;
+	float widthRatio;
+	float heightRatio;
+	float scalingFactor;
 	
+	
+	// Taps
 	private boolean mFirstTap = false;
 	private boolean mSecondTap = false;
 	private long mLastTapTime;
@@ -79,7 +87,7 @@ public class PainterThread extends Thread {
 			mPrefs.setDefaultPreferences(ctx);
 		}
 		
-		//DEBUGGING
+		//DEBUGGING REMOVE LATER
 		mPrefs.setDefaultPreferences(ctx);
 		
 		// This is our background manager
@@ -108,7 +116,7 @@ public class PainterThread extends Thread {
 				
                 synchronized(mSurfaceHolder) { 
                 	// We paint inside this synchronized call
-                	drawBackground(c);   
+                	drawBackgroundWithMatrix(c);   
                 	
                 	if(mSprite != null) {
                 		mSprite.doDraw(c);
@@ -217,6 +225,7 @@ public class PainterThread extends Thread {
 			mBackgroundInit = INIT_AWAITING;
 			mSpriteInit = INIT_AWAITING;
 		}
+		if(mSprite!=null)mSprite.onSharedPreferenceChanged();
 	}
 		
 	
@@ -226,6 +235,22 @@ public class PainterThread extends Thread {
 	private void drawBackground(Canvas c) {		
 		if(mBackgroundBitmap != null) {
 			c.drawBitmap(mBackgroundBitmap, (mSurfaceWidth - mBackgroundBitmap.getWidth()) * mOffset, 0, null);
+		}
+	}
+	
+	private void drawBackgroundWithMatrix(Canvas c) {		
+		if(mBackgroundBitmap != null) {
+			translation= (float)((-mSurfaceWidth) * mOffset);
+			//Log.i("Painterthread","translation: "+translation);
+			mScaleMatrix.reset();
+			widthRatio = (float)2*mSurfaceWidth/mBackgroundBitmap.getWidth();
+			heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+			//Log.i("PainterThread","HR: "+Float.toString(heightRatio)+" WR: "+Float.toString(widthRatio)+
+					//" SF: "+scalingFactor+" mOffset: "+mOffset+" trans: "+translation);
+			scalingFactor = Math.max(widthRatio, heightRatio);
+			mScaleMatrix.setScale(scalingFactor, scalingFactor);
+			mScaleMatrix.postTranslate(translation,0);
+			c.drawBitmap(mBackgroundBitmap,mScaleMatrix, null);
 		}
 	}
 	
@@ -275,7 +300,7 @@ public class PainterThread extends Thread {
     }
     
     /*
-     * Function used to controll canvas width, height, offsets etc.
+     * Function used to control canvas width, height, offsets etc.
      */
     public void setSurfaceSize(int width, int height) {
     	

@@ -11,4 +11,5 @@ public abstract class Sprite {
 	public abstract void doSingleTapEvent(int x, int y);
 	public abstract void doDoubleTapEvent(int x, int y);
 	public abstract void doWallpaperScroll(float xOffset, float xOffsetStep, int xPixelOffset, int screenWidth);
+	public abstract void onSharedPreferenceChanged();
 }

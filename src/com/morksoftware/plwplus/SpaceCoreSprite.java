@@ -551,4 +551,10 @@ public class SpaceCoreSprite extends Sprite {
 		}   //Log.i("lol", "Height: "+ Integer.toString(mSpriteHeigth));
         //Log.i("scale:", "sx: " + Float.toString(sx) + "sy: "+Float.toString(sy));
 	}
+
+	@Override
+	public void onSharedPreferenceChanged() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -11,8 +11,7 @@
     
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.Menu">
+        android:label="@string/app_name">
         <service android:name=".PortalWallpaperService"
             	 android:label="@string/app_name"
                  android:permission="android.permission.BIND_WALLPAPER">

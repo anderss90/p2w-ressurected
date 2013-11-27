@@ -201,10 +201,16 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		bmOptions.inScaled=true;
 		    		//bmOptions.inDensity=100;
 		    		//bmOptions.inTargetDensity=25;
-		    		int sourceImageWidth=1920;
-		    		int scaleFactor= (int)1920/mDisplay.getWidth();
+		    		
+		    		bmOptions.inJustDecodeBounds = true;
+		    		// Sample the asset, without loading the pixels
+		    		BitmapFactory.decodeResource(mCtx.getResources(), mPics[position], bmOptions);
+		    		int sourceImageWidth=bmOptions.outWidth;
+		    		
+		    		int scaleFactor= (int)sourceImageWidth/mDisplay.getWidth();
 		    		Log.i("PrefsInclBGs","scaleFactor: "+scaleFactor);
 		    		bmOptions.inSampleSize=scaleFactor;
+		    		bmOptions.inJustDecodeBounds = false;
 		    		Bitmap bitmap = BitmapFactory.decodeResource(mCtx.getResources(), mPics[position], bmOptions);
 		    		iv.setImageBitmap(bitmap);
 		    		

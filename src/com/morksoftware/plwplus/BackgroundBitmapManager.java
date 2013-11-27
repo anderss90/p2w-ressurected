@@ -52,7 +52,7 @@ public class BackgroundBitmapManager {
 	
 	public Bitmap loadScaledBitmapFromPath(String path, boolean isPreview) {
 		// Fetch adjusted metrics
-		updateWallpaperMetrics(isPreview);
+		
 		
 		
 		// Get an instance of BitmapFactory.Options to handle decoding options
@@ -68,41 +68,47 @@ public class BackgroundBitmapManager {
 		BitmapFactory.decodeFile(path, bmOptions);
 		
 		// Get the height of the sampled asset
-		int tempBitmapHeight = bmOptions.outHeight;
+		float tempBitmapHeight = (float)bmOptions.outHeight;
 		
 		// Get the width of the sampled asset
-		int tempBitmapWidth = bmOptions.outWidth;
+		float tempBitmapWidth = (float)bmOptions.outWidth;
 		
-		RAW_ASSET_HEIGHT = tempBitmapHeight;
-		RAW_ASSET_WIDTH = tempBitmapWidth;
+		RAW_ASSET_HEIGHT = (int)tempBitmapHeight;
+		RAW_ASSET_WIDTH = (int)tempBitmapWidth;
+		updateWallpaperMetrics(isPreview);
 		
 		// Calculate the ratio between the the asset width and desired width 
-		float widthRatio = RAW_ASSET_WIDTH / mDesiredWidth;
+		float widthRatio = tempBitmapWidth / mDesiredWidth;
 		
 		// Calculate the ratio between the asset height and the desired height 
-		float heightRatio = RAW_ASSET_HEIGHT / mDesiredHeight;
-		
+		float heightRatio = tempBitmapHeight/ mDesiredHeight;
+		Log.i("TAG","HR: "+Float.toString(heightRatio)+" WR: "+Float.toString(widthRatio));
 		// This will be our scaling factor
 		float scalingFactor = Math.min(widthRatio, heightRatio);
 		
 		Log.i(TAG, "scalingFactor: " + Float.toString(scalingFactor));
-		Log.i(TAG, "sampledBitmapWidth: " + Integer.toString(tempBitmapWidth) + ", sampledBitmapHeight: " + Integer.toString(tempBitmapHeight));
-		if (scalingFactor>1)scalingFactor=1;
-		scalingFactor=1;
-		Bitmap returnBitmap = null;		
-
+		Log.i(TAG, "sampledBitmapWidth: " + Float.toString(tempBitmapWidth) + ", sampledBitmapHeight: " + Float.toString(tempBitmapHeight));
+		
+		/* -------------     DEBUGGING REMOVE LATER ---------- */
+		//if (scalingFactor>1)scalingFactor=1;
+			
+		
+		/* ------------------------------------------------------*/
+		Bitmap returnBitmap = null;	
 		// If the raw asset metrics matchs the desired metrics, we can just decode the Bitmap as is.
-		if(tempBitmapHeight <= mDesiredHeight && tempBitmapWidth <= mDesiredWidth) {
-			return returnBitmap = BitmapFactory.decodeFile(path);
+		if((tempBitmapHeight == mDesiredHeight && tempBitmapWidth == mDesiredWidth)) {
+			bmOptions.inJustDecodeBounds=false;
+			bmOptions.inSampleSize=(int) scalingFactor;
+			return returnBitmap = BitmapFactory.decodeFile(path,bmOptions);
 		}		
 		// We need to scale the bitmap
 		else {				
 			
 			// Calculate position of the cropped Bitmap inside the raw asset.
-			int left = (tempBitmapWidth / 2) - (int)((scalingFactor*mDesiredWidth) / 2);
-			int top = (tempBitmapHeight / 2) - (int)((scalingFactor*mDesiredHeight) / 2);
-			int right = left + (int)scalingFactor*mDesiredWidth;
-			int bottom = top + (int)scalingFactor*mDesiredHeight;
+			int left = (int)(tempBitmapWidth / 2) - (int)((scalingFactor*mDesiredWidth) / 2);
+			int top = (int)(tempBitmapHeight / 2) - (int)((scalingFactor*mDesiredHeight) / 2);
+			int right = left + (int)(scalingFactor*mDesiredWidth);
+			int bottom = top + (int)(scalingFactor*mDesiredHeight);
 			Log.i("TAG","left: "+left+" top: "+top+" right: "+right+" bottom: "+bottom);
 			// A decode used to decode a region of an image
 			BitmapRegionDecoder regionDecoder = null;
@@ -122,10 +128,7 @@ public class BackgroundBitmapManager {
 				
 				// This time we want to decode completely (With pixels)
 				bmOptions.inJustDecodeBounds = false;
-				//bmOptions.inScaled=true;
-				bmOptions.inScaled=false;
-				bmOptions.inDensity=100;
-				bmOptions.inTargetDensity =(int)(100/scalingFactor);
+				bmOptions.inSampleSize=(int) scalingFactor;
 				Log.i("TAG","inTargetDensity:"+Integer.toString(bmOptions.inTargetDensity)+" InDensity: "+Integer.toString(bmOptions.inDensity));			
 				Log.i(TAG, "loadScaledBitmap() - Background scaled with BitmapRegionDecoder");
 				
@@ -228,6 +231,7 @@ public class BackgroundBitmapManager {
 				// Decode the asset
 				returnBitmap = regionDecoder.decodeRegion(new Rect(left, top, right, bottom), bmOptions);
 				Log.i(TAG, "Scaled width: " + Integer.toString(returnBitmap.getWidth()) + ", scaled height: " + Integer.toString(returnBitmap.getHeight()));
+				regionDecoder.recycle();
 			}			
 		
 			
@@ -247,10 +251,13 @@ public class BackgroundBitmapManager {
 			
 			// Set the desired with to two times the screen width, for parallax scrolling.
 			// If the desired width is equal to or greater than the raw asset width, set desired with equal to display width.
+			/*
 			if((mDisplay.getWidth() * 2) >= RAW_ASSET_WIDTH)
 				mDesiredWidth = mDisplay.getWidth();
 			else
 				mDesiredWidth = mDisplay.getWidth() * 2;
+				*/
+			mDesiredWidth = mDisplay.getWidth() * 2;
 		}
 		else {
 			Log.i(TAG, "updateWallpaperMetrics() - isPreview = TRUE");

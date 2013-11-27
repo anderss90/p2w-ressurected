@@ -114,7 +114,9 @@ public class PortalWallpaperService extends WallpaperService {
 			try {
 				mThread.start();
 			}
-			catch(IllegalStateException e) {
+			catch(IllegalThreadStateException e) {
+				// Thread already started
+			}catch(IllegalStateException e) {
 				// Thread already started
 			}
 		}

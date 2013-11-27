@@ -67,19 +67,35 @@ public class PrefsMainFragment extends PreferenceFragment implements OnSharedPre
         if (SpaceBackgroundSource!=null) SpaceBackgroundSource.setOnPreferenceChangeListener(this);
     }
     
-
+  
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		setListeners();
+	}
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPref, String key) {
 		// TODO Auto-generated method stub
 		Log.i("PrefsMainFragment", "OnSharedPrefChanged");
 		if (key.equals("pref_mode")){
-			preference_screen = (PreferenceScreen) getPreferenceScreen();
+			
         	//Log.i("onSharedPrefsChanged:" ,preference_screen.getKey());
-        	try{preference_screen.removeAll();
-        	}catch(NullPointerException e){
-        		Toast.makeText(getActivity(), "NPE in getPrefScreen",Toast.LENGTH_SHORT);
-        		e.printStackTrace();
-        	}
+			int counter=0;
+			boolean success=false;
+			boolean NPE=false;
+			while (counter<10 && !success){
+				preference_screen = (PreferenceScreen) getPreferenceScreen();
+	        	try{preference_screen.removeAll();
+	        	}catch(NullPointerException e){
+	        		e.printStackTrace();
+	        		counter++;
+	        		NPE=true;
+	        		Log.i("PrefsMainFragment","counter: "+counter);
+	        	}
+	        	if(!NPE) success=true;
+			}
+	        	
         	addPreferencesFromResource(R.xml.prefs_main_menu);
 			String pref_mode = mPrefs.getWallpaperMode();
 			if(pref_mode.equals("Space")){
@@ -88,17 +104,20 @@ public class PrefsMainFragment extends PreferenceFragment implements OnSharedPre
 	        else if(pref_mode.equals("Labs"))  {
 	        	addPreferencesFromResource(R.xml.pref_labs_mode);
 	        }
+			setListeners();
 		}
 	}
 	
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newvalue) {
+		Log.i("PrefsMainFragment", "onPrefChange starting");
 		String key = preference.getKey();
 		if (((String)newvalue).equals("included")){
 			Intent backgroundIntent = new Intent(getActivity(),PrefsIncludedBackgrounds.class);
 			startActivityForResult(backgroundIntent,SELECT_FROM_INCLUDED);
 		}
 		else if (((String)newvalue).equals("gallery")){
+			/*
 			Intent intent = new Intent(
                     Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -106,6 +125,17 @@ public class PrefsMainFragment extends PreferenceFragment implements OnSharedPre
 	        intent.setAction(Intent.ACTION_GET_CONTENT);
 	        startActivityForResult(Intent.createChooser(intent,
 	                "Select Picture"), SELECT_PICTURE);
+	        */
+	        Intent pictureActionIntent = new Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pictureActionIntent.setType("image/*");
+            //pictureActionIntent.putExtra("return-data", true);
+            pictureActionIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(pictureActionIntent,SELECT_PICTURE);
+	        
+	        
+	        
 		}
 		Log.i("PrefsMainFragment", "onPrefChange returning");
 		return true;

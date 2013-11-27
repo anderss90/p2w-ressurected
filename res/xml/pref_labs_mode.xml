@@ -41,7 +41,7 @@
 	        android:dialogTitle="@string/pref_labs_speed_dialog"
 	        android:entries="@array/pref_labs_speed_entries"
 	        android:entryValues="@array/pref_labs_speed_values"
-	        android:defaultValue="50" />
+	        android:defaultValue= "50" />
 		
 		<CheckBoxPreference
         android:key="pref_labs_sound"
