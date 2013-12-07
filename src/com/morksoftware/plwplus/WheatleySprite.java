@@ -208,7 +208,7 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	private void updateAnimation() {			
-		if(mCurrentTime > mLastAnimationUpdateTime + mAnimationUpdatePeriod) {
+		if(mCurrentTime > mLastAnimationUpdateTime + mAnimationUpdatePeriod) { // OLD IF-CONDITION: (mCurrentTime > mLastAnimationUpdateTime + mAnimationUpdatePeriod)
 			mSrcRect.left = mCurrentFrame*mSpriteWidth;
 			mSrcRect.right = mSrcRect.left + mSpriteWidth;			
 			
@@ -236,7 +236,7 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	private void updatePosition() {
-		if(mCurrentTime > mLastPositionUpdateTime + mPositionUpdatePeriod) {
+		if(true) { // OLD IF: (mCurrentTime > mLastPositionUpdateTime + mPositionUpdatePeriod)
 			
 			doStalkerMode();
 
@@ -286,6 +286,7 @@ public class WheatleySprite extends Sprite {
 			mNeedPositionXChange = false;
 			mNeedPositionYChange = false;
 			mNeedPositionZChange = false;
+			Log.i("Updatevisibility", "mPos Y: "+mPositionY+"mRandom: "+mRandom);
 		}
 	}
 	
@@ -409,7 +410,7 @@ public class WheatleySprite extends Sprite {
 			mNeedPositionXChange = false;
 			mDirectionX = !mDirectionX;
 			mLastPositionX = mPositionX;
-			if (mRandom) {
+			if (mRandom && !mNeedPositionZChange && !mNeedPositionYChange) {
 				mRandom = false; 
 			}
 			mSpeedX = 1.0;
@@ -455,9 +456,6 @@ public class WheatleySprite extends Sprite {
 			mLastPositionZ = mPositionZ;
 			mSpeedZ = 1.0;
 			mAccelZone = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedZ) / (2*mAccel));
-            if (mRandom) {
-                mRandom = false;
-            }
         }
         mLastActivityTime = System.currentTimeMillis();
 		
@@ -529,35 +527,42 @@ public class WheatleySprite extends Sprite {
 		}
 	}
 	
-	private void randomMovement ()  {
+	private void randomMovement()  {
 		int xy = mRandomGen.nextInt(4);
-        if (xy <3 && mPositionY == mDownPositionY){
-            int n=1;
-            if (mRandomGen.nextInt(2)==1){
-                n = -n;
-            }
-            int x=(int)((mRandomGen.nextFloat()*(mScreenWidth-mSpriteWidth)) + (mRandomGen.nextInt(2)*n*mScreenWidth));
-
-            if ((Math.abs(x-mPositionX)) > mScreenWidth/4 && mPositionX >= 0 && mPositionX < mScreenWidth /* && x > mPixelOffsetX && x < (2*mScreenWidth+mPixelOffsetX) */) {
-                setNewPositionX(x, false );
-                mRandom = true;
-            }
-            else if ((Math.abs(x-mPositionX)) > mScreenWidth/4 && x >= 0 && x < mScreenWidth-mSpriteWidth) {
-                setNewPositionX(x, false );
-                mRandom = true;
-            }
-        }
-        else {
-            if (mPositionY == mDownPositionY && mPositionX >= 0 && mPositionX < mScreenWidth){
+		if (mPositionY == mDownPositionY){
+	        if (xy <3){
+	            int n=1;
+	            if (mRandomGen.nextInt(2)==1){
+	                n = -n;
+	            }
+	            int x=(int)((mRandomGen.nextFloat()*(mScreenWidth-mSpriteWidth)) + (mRandomGen.nextInt(2)*n*mScreenWidth));
+	
+	            if ((Math.abs(x-mPositionX)) > mScreenWidth/4 && mPositionX >= 0 && mPositionX < mScreenWidth /* && x > mPixelOffsetX && x < (2*mScreenWidth+mPixelOffsetX) */) {
+	                setNewPositionX(x, false );
+	                mRandom = true;
+	            }
+	            else if ((Math.abs(x-mPositionX)) > mScreenWidth/4 && x >= 0 && x < mScreenWidth-mSpriteWidth) {
+	                setNewPositionX(x, false );
+	                mRandom = true;
+	            }
+	        }
+	        else if (mPositionY == mDownPositionY && mPositionX >= 0 && mPositionX < mScreenWidth){
+            	setNewPositionZ(-200);
                 setNewPositionY(-mSpriteHeigth,false);
                 mRandom = true;
             }
-            else if (mPositionY == mUpPositionY) {
-                setNewPositionY(0,false);
-                mRandom = true;
-            }
+	        
+		}
+        
+        else {
+        	
+        	setNewPositionZ(0);
+            setNewPositionY(0,false);
+            setNewPositionX(0, false);
+            mRandom = true;
         }
-	}
+            
+  }
 	
 	@Override
 	public void doSingleTapEvent(int x, int y) {
@@ -623,7 +628,7 @@ public class WheatleySprite extends Sprite {
             }
             else if(x != mPositionX && !mDestRect.contains(x, y)) {
                 //Log.i("move", "wheatley");
-                setNewPositionX(x - (mSpriteWidth/2), true);
+                setNewPositionX(x - (mSpriteWidth/2), mRandom);
                 setNewPositionY(0,true);
             }
         }

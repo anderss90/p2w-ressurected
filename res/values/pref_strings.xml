@@ -50,7 +50,7 @@
 	
 	 <string name="pref_space_speed_title">Movement speed</string>
    	 <string name="pref_space_speed_dialog">Select movement speed</string>
-   	 <string name="pref_labs_speed_summary">Space Core\'s movement speed</string>
+   	 <string name="pref_space_speed_summary">Space Core\'s movement speed</string>
    	 <!-- 
    	 <string name="pref_space_fps_title">Performance</string>
    	 <string name="pref_space_fps_dialog">Frames per second</string>

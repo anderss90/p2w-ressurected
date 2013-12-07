@@ -185,7 +185,7 @@ public class SpaceCoreSprite extends Sprite {
 	}
 	
 	private void updateAnimation() {		
-		if(mCurrentTime > mLastAnimationUpdateTime + mAnimationUpdatePeriod) {
+		if(mCurrentTime > mLastAnimationUpdateTime + mAnimationUpdatePeriod) { //OLD IF: (mCurrentTime > mLastAnimationUpdateTime + mAnimationUpdatePeriod)
 			mSrcRect.left = mCurrentFrame*mSpriteWidth;
 			mSrcRect.right = mSrcRect.left + mSpriteWidth;
 			
@@ -215,7 +215,7 @@ public class SpaceCoreSprite extends Sprite {
 	}
 	
 	private void updatePosition() {	
-		if(mCurrentTime >= mLastPositionUpdateTime + mPositionUpdatePeriod) {
+		if(true) { // OLD IF: (mCurrentTime >= mLastPositionUpdateTime + mPositionUpdatePeriod)
 			
 			updateAngleAndPositionZ();
             sx = (float)(1+(mPosition2Z / 2000.0));
@@ -496,6 +496,7 @@ public class SpaceCoreSprite extends Sprite {
             }
 
             mPositionX += (int) Math.ceil((screenWidth) * ((mOffsetX-xOffset)/xOffsetStep));
+            mPosition2X += (int) Math.ceil((screenWidth) * ((mOffsetX-xOffset)/xOffsetStep));
 			//mNewPositionX += (int) Math.ceil((screenWidth) * ((mOffsetX-xOffset)/xOffsetStep));
 			//mLastPositionX += (int) Math.ceil((screenWidth) * ((mOffsetX-xOffset)/xOffsetStep));				
 

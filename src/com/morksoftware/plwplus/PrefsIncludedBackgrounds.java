@@ -82,38 +82,6 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 				e.printStackTrace();
 				Log.i("NPE", "NPE getting mDisplay");
 			}
-        
-        
-        /*
-        // Find some views by id
-        Gallery mPreviewGallery = (Gallery)findViewById(R.id.Gallery01);        
-        mImgViewLarge = (ImageView)findViewById(R.id.ImageView01);
-        mImgViewLarge.setScaleType(ImageView.ScaleType.CENTER_CROP);
-       
-        
-        // Give the gallery an adapter
-        //mPreviewGallery.setAdapter(new ImageAdapter(this));
-                        
-        // Attach OnItemSelectedListener to gallery
-        mPreviewGallery.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				
-				// Populate imageView
-				mImgViewLarge.setImageResource(mPics[arg2]);	
-				mSelectedId = mPics[arg2];
-				//mPrefs.setWallpaperBackgroundID(mSelectedId);
-				//setResult(RESULT_OK, returnIntent);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {		
-			}
-		});   
-        
-        mImgViewLarge.setOnClickListener(this);
-        
-        */
     }
     
 	private int [] getBackgrounds(String tag){
@@ -187,8 +155,7 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		ImageView iv = new ImageView(ctx);
 		    		
 		    		
-		    		
-		    		//iv.setScaleType(ImageView.ScaleType.FIT_XY);
+		    		//iv.setScaleType(ImageView.ScaleType.);
 		    		// mDisplay.getWidth(),(9/16)*0,001*mDisplay.getWidth())
 		    		double ListHeight=(mDisplay.getWidth()*(0.56));
 		    		Log.i("getwidth*(9/16)",Double.toString(ListHeight));
@@ -198,7 +165,7 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		
 		    		//tegner bilder selv. Innebygde laster hele full HD-bildet -_-
 		    		BitmapFactory.Options  bmOptions = new BitmapFactory.Options();
-		    		bmOptions.inScaled=true;
+		    		//bmOptions.inScaled=true;
 		    		//bmOptions.inDensity=100;
 		    		//bmOptions.inTargetDensity=25;
 		    		
@@ -207,7 +174,7 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		BitmapFactory.decodeResource(mCtx.getResources(), mPics[position], bmOptions);
 		    		int sourceImageWidth=bmOptions.outWidth;
 		    		
-		    		int scaleFactor= (int)sourceImageWidth/mDisplay.getWidth();
+		    		int scaleFactor= (int)sourceImageWidth/480;
 		    		Log.i("PrefsInclBGs","scaleFactor: "+scaleFactor);
 		    		bmOptions.inSampleSize=scaleFactor;
 		    		bmOptions.inJustDecodeBounds = false;

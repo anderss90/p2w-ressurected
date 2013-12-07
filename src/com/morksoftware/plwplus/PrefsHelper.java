@@ -213,10 +213,19 @@ public class PrefsHelper {
 		//edit.clear();
 		edit.putBoolean(PREF_FIRST_RUN, false);	
 		edit.commit();
+		
+		//setting default labs settings
+		setWallpaperMode(PREF_WALLPAPER_MODE_LABS);
 		setBackgroundSource(PREF_BACKGROUND_SOURCE_DEFAULT);
-		setWallpaperMode(PREF_WALLPAPER_MODE_DEFAULT);
 		setWallpaperBackgroundID(PREF_LABS_BACKGROUND_DEFAULT_ID);
-		PreferenceManager.setDefaultValues(ctx, R.xml.prefs_main_menu, false);
+		//setting default space settings
+		setWallpaperMode(PREF_WALLPAPER_MODE_SPACE);
+		setBackgroundSource(PREF_BACKGROUND_SOURCE_DEFAULT);
+		setWallpaperBackgroundID(PREF_SPACE_BACKGROUND_DEFAULT_ID);
+		//setting default mode
+		setWallpaperMode(PREF_WALLPAPER_MODE_DEFAULT);
+		
+		PreferenceManager.setDefaultValues(ctx, R.layout.prefs_mode_picker, false);
 		Log.i("Prefshelper","setDefaultPreferences");
 	}
 	

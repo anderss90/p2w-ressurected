@@ -4,14 +4,16 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="10" />
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19" />
     
     <!-- Features -->
     <uses-feature android:name="android.software.live_wallpaper" />
     
     <application
+        android:largeHeap="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name">
+        
         <service android:name=".PortalWallpaperService"
             	 android:label="@string/app_name"
                  android:permission="android.permission.BIND_WALLPAPER">

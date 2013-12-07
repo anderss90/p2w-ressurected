@@ -1,5 +1,11 @@
 package com.morksoftware.plwplus;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +23,7 @@ public class PainterThread extends Thread {
 	
 	// SurfaceHolder holding the canvas we paint to
 	private SurfaceHolder mSurfaceHolder;
+	private Canvas c;
 	
 	// Context used to fetch resources
 	private Context mCtx;
@@ -61,11 +68,17 @@ public class PainterThread extends Thread {
 	private boolean mFirstTap = false;
 	private boolean mSecondTap = false;
 	private long mLastTapTime;
-	private int mDoubleTapTime = 200;
+	private int mDoubleTapTime;
 	
 	private int mTapX = 0;
 	private int mTapY = 0;
-
+	
+	// Scheduling
+	private ScheduledExecutorService scheduleTaskExecutor;
+	private Timer scheduleTimer;
+	private TimerTask myTimerTask;
+	private long scheduleInterval;
+	private boolean myTimerTaskCanceled;
 	/*
 	 * Constructors
 	 */	
@@ -95,20 +108,87 @@ public class PainterThread extends Thread {
 		
 		// We don't want to paint right away
 		mWait = true;
+		
+		//scheduling
+		myTimerTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				scheduledTask();
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		mDoubleTapTime = 200;
+		scheduleTimer = new Timer("scheduleTimer");
+		scheduleInterval=33;
+		myTimerTaskCanceled=false;
+		
+				
+				
+		
 	}
-	
+	public void scheduledTask() {
+		// Set mRun = true, to begin looping
+		mRun = true;
+		// The canvas we are going to paint to
+		c = null;
+		//Log.i(LOG, "Scheduledtask");
+		// TODO Auto-generated method stub
+		if(mRun){
+			try {			
+				// Fetch canvas from our SurfaceHolder
+				c = mSurfaceHolder.lockCanvas();
+				
+	            synchronized(mSurfaceHolder) { 
+	            	// We paint inside this synchronized call
+	            	drawBackgroundWithMatrix(c);   
+	            	
+	            	if(mSprite != null) {
+	            		mSprite.doDraw(c);
+	                	
+	                	handleTaps();
+	            	}          
+	            	else {
+	            		pausePainting();
+	            	}
+	            }
+				
+			} finally {
+	            if (c != null) {
+	                mSurfaceHolder.unlockCanvasAndPost(c);            
+	            }
+	        }		
+			
+			synchronized(this) {
+				if (mWait) {
+	                try {
+	                	Log.i(LOG, "Paused...");
+	                	// Pause thread
+	                    wait();
+	                } catch (Exception e) {
+	                	// We do nothing...
+	                }
+	            }
+			}
+		}
+	}
 	/*
 	 * Main loop
 	 */	
 	@Override
 	public void run() {		
-		// Set mRun = true, to begin looping
-		mRun = true;
-		
-		// The canvas we are going to paint to
-		Canvas c = null;
-		
 		// Lets loop
+		
+		// trying to schedule run. Works pretty well.
+		scheduleTimer.schedule(myTimerTask,0,scheduleInterval);
+		
+		
+		/* commenting out to try scheduling instead of while loop
+		 * // Set mRun = true, to begin looping
+		mRun = true;
+		// The canvas we are going to paint to
+		c = null;
 		while(mRun) {
 			try {			
 				// Fetch canvas from our SurfaceHolder
@@ -146,8 +226,9 @@ public class PainterThread extends Thread {
                 }
 			}
 		}
+		 */
 	}
-	
+
 	/*
 	 *  Resource initialization and releasing
 	 */
@@ -155,6 +236,7 @@ public class PainterThread extends Thread {
 		// What shall we initialize?
 		wallpaperMode = mPrefs.getWallpaperMode();
 		mBackgroundSource= mPrefs.getBackgroundSource();
+		
 		if (mBackgroundSource.equals(mPrefs.PREF_BACKGROUND_SOURCE_INCLUDED)){
 			mBackgroundID = mPrefs.getWallpaperBackgroundID();
 			mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromResId(mBackgroundID, mPreview);
@@ -162,7 +244,11 @@ public class PainterThread extends Thread {
 		else {
 			mBackgroundPath = mPrefs.getWallpaperBackgroundPath();
 			mBackgroundBitmap = mBackgroundManager.loadScaledBitmapFromPath(mBackgroundPath, mPreview);
+			
 		}
+		widthRatio = (float)2*mSurfaceWidth/mBackgroundBitmap.getWidth();
+		heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+		
 		
 		if(mBackgroundInit == INIT_AWAITING) {
 			Log.i("tag", "Loading Background...");
@@ -239,12 +325,15 @@ public class PainterThread extends Thread {
 	}
 	
 	private void drawBackgroundWithMatrix(Canvas c) {		
-		if(mBackgroundBitmap != null) {
+		if(mBackgroundBitmap != null && mScaleMatrix!=null) {
 			translation= (float)((-mSurfaceWidth) * mOffset);
 			//Log.i("Painterthread","translation: "+translation);
 			mScaleMatrix.reset();
+			
+			/* Not necessary every iteration
 			widthRatio = (float)2*mSurfaceWidth/mBackgroundBitmap.getWidth();
 			heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+			*/
 			//Log.i("PainterThread","HR: "+Float.toString(heightRatio)+" WR: "+Float.toString(widthRatio)+
 					//" SF: "+scalingFactor+" mOffset: "+mOffset+" trans: "+translation);
 			scalingFactor = Math.max(widthRatio, heightRatio);
@@ -272,6 +361,7 @@ public class PainterThread extends Thread {
 		}
 		
 		mWait = false;
+		
         synchronized(this) { 
             notify();
         }
@@ -281,6 +371,7 @@ public class PainterThread extends Thread {
 		Log.i(LOG, "pausePainting");
 		
 		mWait = true;
+		//myTimerTaskCanceled = myTimerTask.cancel();
 		synchronized(this) {
 			notify();
 		}
@@ -297,6 +388,7 @@ public class PainterThread extends Thread {
         synchronized(this) {
             notify();
         }
+        myTimerTaskCanceled = myTimerTask.cancel();
     }
     
     /*
