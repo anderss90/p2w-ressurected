@@ -3,7 +3,7 @@
     
 	<string-array name="pref_modes_entries">
 	    <item>Wheatley</item>
-	  <item>Space Core</item>
+	  <item>Space Core (Premium)</item>
 	</string-array>
 	<string-array name="pref_modes_entry_values">
 	  <item>Labs</item>
@@ -13,7 +13,7 @@
 	
 	<string-array name="pref_labs_background_source_entries">
 	  <item>Included backgrounds</item>
-	  <item>User Gallery</item>
+	  <item>Gallery (Premium)</item>
 	</string-array>
 	<string-array name="pref_labs_background_source_values">
 	  <item>included</item>
@@ -22,7 +22,7 @@
 	
 	<string-array name="pref_space_background_source_entries">
 	  <item>Included in wallpaper</item>
-	  <item>User Gallery</item>
+	  <item>Gallery </item>
 	</string-array>
 	<string-array name="pref_space_background_source_values">
 	  <item>included</item>

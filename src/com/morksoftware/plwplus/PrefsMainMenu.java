@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.preference.PreferenceFragment;
+import com.morksoftware.plwplus.Utils;
 
 
 public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenceChangeListener {
@@ -28,33 +29,43 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
 	private String pref_mode;
 	private boolean hasBeenCreated=false;
 	private boolean modeFlag;
+	private boolean mExtraFeaturesUnlocked=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("PrefsMainMenu","OnCreate starting");
         PACKAGE_NAME = getApplicationContext().getPackageName();
         // Display the fragment as the main content.
         mPrefs = new PrefsHelper(this);
         
         
-        // WAT WAT
+        //DEBUG
+        /*
+        if(hasBeenCreated==false){
+        	mPrefs.setPremiumFromUtils();
+        }
+        */
+    	mExtraFeaturesUnlocked=mPrefs.getPremium();
+        
+        
         mPrefs.registerOnSharedPrefListener(this); 
-        ////
+        
         pref_mode = mPrefs.getWallpaperMode();
         setContentView(R.xml.prefs_main_menu);
-        mainFragment = new PrefsMainFragment();
-        labsFragment = new PrefsLabsFragment();
-        spaceFragment = new PrefsSpaceFragment();
         fragmentManager= getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         modeFlag=false;
         
         //fragmentTransaction.replace(R.id.mainFragment,mainFragment,"mainFragment");
+        fragmentTransaction.replace(R.id.modeFragment,new PrefsLabsFragment());
+        /*
         if(pref_mode.equals("Space")){
-			fragmentTransaction.replace(R.id.modeFragment,spaceFragment);
+			fragmentTransaction.replace(R.id.modeFragment,new PrefsSpaceFragment());
         }
         else if(pref_mode.equals("Labs"))  {
-        	fragmentTransaction.replace(R.id.modeFragment,labsFragment);
+        	fragmentTransaction.replace(R.id.modeFragment,new PrefsLabsFragment());
         }
+        */
         fragmentTransaction.commitAllowingStateLoss();
         hasBeenCreated = true;
     }
@@ -70,16 +81,38 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPref, String key) {
 		// TODO Auto-generated method stub
-		Log.i("PrefsMainFragment", "OnSharedPrefChanged");
-		if (key.equals("pref_mode") && hasBeenCreated){
-			modeFlag=true;
+		
+		if ((key.equals(mPrefs.PREF_SPACE_BACKGROUND_SOURCE)|| key.equals(mPrefs.PREF_LABS_BACKGROUND_SOURCE) ||key.equals("pref_mode") ||key.equals("pref_space_sound")
+				 ||key.equals("pref_labs_sound") ||key.equals("pref_premium_enabled")) && hasBeenCreated){
+			Log.i("PrefsMainMenu", "OnSharedPrefChanged");
+			try{
+				fragmentTransaction = fragmentManager.beginTransaction();
+		    	pref_mode = mPrefs.getWallpaperMode();
+		    	
+		    	fragmentTransaction.replace(R.id.modeFragment,new PrefsLabsFragment());
+		    	/*
+				if(pref_mode.equals("Space")){
+					fragmentTransaction.replace(R.id.modeFragment,new PrefsSpaceFragment());
+		        }
+		        else if(pref_mode.equals("Labs"))  {
+		        	fragmentTransaction.replace(R.id.modeFragment,new PrefsLabsFragment());
+		        }
+		        */
+		    	
+		    	
+				fragmentTransaction.commitAllowingStateLoss();
+			}
+			catch (Exception e){
+				modeFlag=true;
+			}
 		}
 	}
     @Override
-    public void onPostResume(){
-    	
-    	super.onPostResume();
+    public void onResumeFragments(){
+    	Log.i("PrefsMainFragment", "OnPostResumed");
+    	super.onResumeFragments();
     	if (modeFlag){
+    		fragmentTransaction = fragmentManager.beginTransaction();
 	    	pref_mode = mPrefs.getWallpaperMode();
 			if(pref_mode.equals("Space")){
 				fragmentTransaction.replace(R.id.modeFragment,spaceFragment);
@@ -88,8 +121,18 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
 	        	fragmentTransaction.replace(R.id.modeFragment,labsFragment);
 	        }
 			fragmentTransaction.commitAllowingStateLoss();
+			modeFlag=false;
     	}
     	
     }
-
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	mPrefs.registerOnSharedPrefListener(this);
+    }
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	mPrefs.unregisterOnSharedPrefListener(this);
+    }
 }

@@ -13,8 +13,11 @@
     <string name="pref_mode_dialog">Select wallpaper mode</string>
     <string name="pref_mode_summary">Wheatley or Space Core</string>
     
-    <string name="pref_category_space">Preferences for mode: Space Core</string>
-    <string name="pref_category_labs">Preferences for mode: Wheatley</string>
+    <string name="pref_get_premium_title">Unlock Premium</string>
+    <string name="pref_get_premium_summary">Get Space Core mode and backgrounds from gallwery</string>
+    
+    <string name="pref_category_space">Preferences for Space Core</string>
+    <string name="pref_category_labs">Preferences for Wheatley</string>
     
     <string name="pref_labs_background_source_title">Background</string>
     <string name="pref_labs_background_source_dialog">Select background from</string>
@@ -25,7 +28,7 @@
     
     <string name="pref_labs_position_title">Screen position</string>
     <string name="pref_labs_position_summary">Where on the screen Wheatley will stay</string>
-    <string name="pref_labs_position_dialog">Select Wheatleys screen position</string>
+    <string name="pref_labs_position_dialog">Select Wheatley\'s screen position</string>
     
     
     <string name="pref_labs_random_movement_checkbox_title">Restlessness</string>
@@ -40,7 +43,7 @@
 	
 	 <string name="pref_labs_speed_title">Movement speed</string>
    	 <string name="pref_labs_speed_dialog">Select movement speed</string>
-   	 <string name="pref_labs_speed_summary">Wheatleys movement speed</string>
+   	 <string name="pref_labs_speed_summary">Wheatley\'s movement speed</string>
    	 
    	 <string name="pref_labs_fps_title">Performance</string>
    	 <string name="pref_labs_fps_dialog">Frames per second</string>
@@ -51,6 +54,10 @@
 	 <string name="pref_space_speed_title">Movement speed</string>
    	 <string name="pref_space_speed_dialog">Select movement speed</string>
    	 <string name="pref_space_speed_summary">Space Core\'s movement speed</string>
+   	 
+   	 <string name="pref_space_tap_enable_title"> Enable tap actions </string>
+   	 <string name="pref_space_tap_enable_summary"></string>
+   	 
    	 <!-- 
    	 <string name="pref_space_fps_title">Performance</string>
    	 <string name="pref_space_fps_dialog">Frames per second</string>

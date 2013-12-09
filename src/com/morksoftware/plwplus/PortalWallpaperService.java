@@ -2,8 +2,10 @@ package com.morksoftware.plwplus;
 
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -44,12 +46,20 @@ public class PortalWallpaperService extends WallpaperService {
 
 	// PortalEngine
 	private class PortalEngine extends Engine implements OnSharedPreferenceChangeListener {
+		@SuppressLint("NewApi")
+		public PortalEngine() {
+			   if(Build.VERSION.SDK_INT >= 15 ){
+			   this.setOffsetNotificationsEnabled(true);
+			   }
+		}
+		
 		// Constants used for debugging
 		private static final String LOG = "PortalEngine";
 		private String mID;
 		
 		// The thread doing all the work
 		private PainterThread mThread;
+		
 		
 		//
 		private float mOffset;

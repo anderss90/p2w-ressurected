@@ -6,7 +6,9 @@ import android.content.Context;
 import android.graphics.*;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 public class SpaceCoreSprite extends Sprite {
 	// The bitmap we want drawn to our canvas
@@ -35,10 +37,12 @@ public class SpaceCoreSprite extends Sprite {
 
     private Rect mDestRect2;
     private Rect mSrcRect2;
+    
+    private RectF mOutRect;
 	
 	// Animation controls
 	private long mLastAnimationUpdateTime = 0;
-	private int mAnimationUpdatePeriod = 70;
+	private int mAnimationUpdatePeriod = 40;
     private long mLastAngleUpdateTime = 0;
     private int mAngleUpdatePeriod = 200;
 	private int mCurrentFrame = 0;
@@ -46,12 +50,14 @@ public class SpaceCoreSprite extends Sprite {
 	
 	// Position controls	
 	private double mAngle = Math.PI/4;	
+	private float mBaseSpeed=(float)14;
 	private float mMaxSpeed = 12;
 	private float mSpeed = 6;
 	private Random mRandomGen;
 	private float mPositionZ = 0;
 	private float mPositionX = -500;
 	private float mPositionY = 500;
+	private boolean mDirectionZ=true;
 
     private double mAngle2 = Math.PI/4;
     private float mMaxSpeed2 = 12;
@@ -88,6 +94,7 @@ public class SpaceCoreSprite extends Sprite {
 	// Sound 
 	private int[] mSoundResources = {R.raw.space01, R.raw.space02, R.raw.space04, R.raw.space05, R.raw.space20, R.raw.space22, R.raw.space24, R.raw.space25, R.raw.space26, R.raw.space27, R.raw.space28};
 	private boolean mIsPlayingSound = false;
+	private int mPreviousSound;
 
     //Matrix
     Matrix mRotateMatrix = new Matrix();
@@ -96,9 +103,23 @@ public class SpaceCoreSprite extends Sprite {
     float mRotateAngle = ((float) 1);
     float sx = 0;
     float sy = 0;
+    
+    Matrix mSpaceCoreRotateMatrix = new Matrix();
+    float mSpaceCoreDx = 0;
+    float mSpaceCoreDy = 0;
+    float mSpaceCoreRotateAngle = ((float) 1);
+    float mSpaceCoreSx = 0;
+    float mSpaceCoreSy = 0;
+    
+    
+    //Preferences
+    private PrefsHelper mPrefs;
+	private boolean mEnableSound;
+	private boolean mEnableTaps;
 
 	@Override
 	public void initResources(Context ctx, int screenWidth, int screenHeight) {
+		mDirectionZ=true;
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inInputShareable = true;
 		options.inPurgeable = true;
@@ -137,11 +158,24 @@ public class SpaceCoreSprite extends Sprite {
         mLeftBoundry = -mSpriteWidth;
 
         mRotateMatrix.reset();
+        
+        //preferences
+        DisplayMetrics dm = new DisplayMetrics();
+	    ((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
+        float xDpi = dm.xdpi;
+		mBaseSpeed = (float) (2*0.028*xDpi);
+        mPrefs = new PrefsHelper(ctx);
+        
+        onSharedPreferenceChanged();
 
-
-
-
-
+	}
+	
+	@Override
+	public void onSharedPreferenceChanged(){
+		mMaxSpeed=(float) (mPrefs.getMovementSpeed()*mBaseSpeed*0.01);
+		mEnableSound = mPrefs.getEnableSound();
+		mEnableTaps = mPrefs.getTapActionsEnabled();
+		//Log.i("Wheatlet_onsharedpref", Float.toString(mMaxSpeed) + ", " + Float.toString(mAccel));
 	}
 
 	@Override
@@ -181,6 +215,7 @@ public class SpaceCoreSprite extends Sprite {
             //Log.i("", "mLastOffset: " + Float.toString(mLastStalkerOffset));
             mFirstRun = false;
         }
+        
         c.drawBitmap(mBitmap, mSrcRect, mDestRect, null);
 	}
 	
@@ -205,8 +240,8 @@ public class SpaceCoreSprite extends Sprite {
 			else if(mCurrentFrame >= (mFrameCount-1)) {
 				mReverse = true;
 			}
-
-
+			
+			
 
 			
 			// Register animation update
@@ -246,6 +281,10 @@ public class SpaceCoreSprite extends Sprite {
 
 			mLastPositionUpdateTime = mCurrentTime;
 			//mFirstRun=false;
+			
+			
+			
+			
 		}
 	}
 	
@@ -303,6 +342,15 @@ public class SpaceCoreSprite extends Sprite {
             mPosition2Z +=mSpeed2;
 
         }
+        //mdirection Z==true means that mPositionZ is increasing
+        if (mDirectionZ==true){
+        	mPositionZ+=1;
+        }
+        else if (mDirectionZ==false){
+        	mPositionZ-=1;
+        }
+        
+        Log.i("SpaceCoreSprite updatePosZ","mPosZ: "+mPositionZ);
     }
 	
 	private void updateAngleAndPositionZ() {
@@ -322,6 +370,13 @@ public class SpaceCoreSprite extends Sprite {
                         mLeftAction=true;
                     }
                     //Log.i("side=", "Left: ");
+                    if (mPositionZ<-200){
+                    	mDirectionZ=true;
+                    }
+                    
+                    else if (mPositionZ>-200){
+                    	mDirectionZ=false;
+                    }
                 }
                 if (mPositionX +mSpriteWidth > mRightBoundry && !mRightAction){
                     if (Math.sin(mAngle) < 0) {
@@ -337,6 +392,13 @@ public class SpaceCoreSprite extends Sprite {
                         mRightAction=true;
                     }
                     //Log.i("side=", "Right: ");
+                    if (mPositionZ<-200){
+                    	mDirectionZ=true;
+                    }
+                    
+                    else if (mPositionZ>-200){
+                    	mDirectionZ=false;
+                    }
                 }
                 if (mPositionY < mTopBoundry && !mTopAction) {
                     if(Math.cos(mAngle) <0) {
@@ -352,6 +414,13 @@ public class SpaceCoreSprite extends Sprite {
                         mTopAction=true;
                     }
                     //Log.i("side=", "Top: ");
+                    if (mPositionZ<-200){
+                    	mDirectionZ=true;
+                    }
+                    
+                    else if (mPositionZ>-200){
+                    	mDirectionZ=false;
+                    }
                 }
                 if (mPositionY+mSpriteHeigth > mBottomBoundry && !mBottomAction) {
                     if(Math.cos(mAngle) < 0) {
@@ -366,7 +435,21 @@ public class SpaceCoreSprite extends Sprite {
                         mLastDistanceUpdateTime = mCurrentTime;
                         mBottomAction=true;
                     }
+                    if (mPositionZ<-200){
+                    	mDirectionZ=true;
+                    }
+                    
+                    else if (mPositionZ>-200){
+                    	mDirectionZ=false;
+                    }
                     //Log.i("side=", "Bottom: ");
+                    if (mPositionZ<-200){
+                    	mDirectionZ=true;
+                    }
+                    
+                    else if (mPositionZ>-200){
+                    	mDirectionZ=false;
+                    }
                 }
                 if (mPositionY+mSpriteHeigth > mTopBoundry) {
                     mTopAction=false;
@@ -381,36 +464,44 @@ public class SpaceCoreSprite extends Sprite {
                     mBottomAction=false;
                 }
                 mLastDistanceUpdateTime = mCurrentTime;
-
+                
+                
 
 	}
 
 
 	@Override
 	public void doSingleTapEvent(int x, int y) {
-		if(mDestRect.contains(x, y) && !mIsPlayingSound) {
-			mIsPlayingSound = true;
-			
-			Log.i("SpaceCoreSprite", "HIT!");
-			MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[mRandomGen.nextInt(11)]);
-            mp.start();
-            mp.setOnCompletionListener(new OnCompletionListener() {
-
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    // TODO Auto-generated method stub
-                    mp.release();
-                    mIsPlayingSound = false;
+		if(mEnableTaps){
+			if(mDestRect.contains(x, y) && !mIsPlayingSound) {
+				mIsPlayingSound = true;
+				
+				Log.i("SpaceCoreSprite", "HIT!");
+				int currentSound=0;
+                while (currentSound==mPreviousSound){
+                	currentSound=mRandomGen.nextInt(11);
                 }
-
-            });
+                mPreviousSound=currentSound;
+				MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[currentSound]);
+	            mp.start();
+	            mp.setOnCompletionListener(new OnCompletionListener() {
+	
+	                @Override
+	                public void onCompletion(MediaPlayer mp) {
+	                    // TODO Auto-generated method stub
+	                    mp.release();
+	                    mIsPlayingSound = false;
+	                }
+	
+	            });
+			}
+	        else if (!mDestRect.contains(x, y)) {
+	            //tapAnimation1(x,y);
+	            //tapAnimation2(x,y);
+	            tapAnimation3(x,y);
+	            //tapAnimation4(x,y);
+	        }
 		}
-        else if (!mDestRect.contains(x, y)) {
-            //tapAnimation1(x,y);
-            //tapAnimation2(x,y);
-            tapAnimation3(x,y);
-            //tapAnimation4(x,y);
-        }
     }
 
     private void tapAnimation1 (int x, int y) {
@@ -553,9 +644,5 @@ public class SpaceCoreSprite extends Sprite {
         //Log.i("scale:", "sx: " + Float.toString(sx) + "sy: "+Float.toString(sy));
 	}
 
-	@Override
-	public void onSharedPreferenceChanged() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

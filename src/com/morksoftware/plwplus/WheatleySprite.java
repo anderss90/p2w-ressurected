@@ -41,6 +41,7 @@ public class WheatleySprite extends Sprite {
 	private float mMaxSpeed=(float)7;	
 	private float mAccel=(float)0.5;
 	private float mAccelZone;
+	private float mAccelZoneX;
 	private double mSpeedX = 1;
 	private double mSpeedY = 1;
 	private double mSpeedZ = 1;
@@ -94,15 +95,16 @@ public class WheatleySprite extends Sprite {
 	// Animation controls
 	private long mCurrentTime;
 	private long mLastAnimationUpdateTime = 0;
-	private int mAnimationUpdatePeriod = 70;
+	private int mAnimationUpdatePeriod = 40;
 	private int mCurrentFrame = 0;
 	private boolean mReverseAnimation = false;
 
     // Sounds
-    private int[] mSoundResources = {R.raw.labs01, R.raw.labs02, R.raw.labs03};
+    private int[] mSoundResources = {R.raw.labs01, R.raw.labs02, R.raw.labs04, R.raw.labs05, R.raw.labs06, R.raw.labs07, R.raw.labs08, R.raw.labs09, 
+			R.raw.labs10, R.raw.labs11, R.raw.labs12, R.raw.labs13, R.raw.labs14, R.raw.labs15, R.raw.labs16, R.raw.labs17, R.raw.labs18};
     private boolean mIsPlayingSound = false;
     private Context mCtx;
-
+    private int mPreviousSound;
 	// Settings
     private PrefsHelper mPrefs;
 	private int mTapAction = WHEATLEY_TAP_ACTION_YZ;
@@ -128,6 +130,11 @@ public class WheatleySprite extends Sprite {
 		if(mTapAction == 2) {
 			mPositionZ = -200;
 		}
+		
+		// init sounds
+		
+		
+				
 		
 		mSpriteWidth = mBitmap.getWidth()/mFrameCount;
 		mSpriteHeigth = mBitmap.getHeight();		
@@ -188,10 +195,7 @@ public class WheatleySprite extends Sprite {
 	@Override
 	public void doDraw(Canvas c) {
 		if(mDraw) {
-			if(mFirstRun) {
-				Log.i("", "mLastOffset: " + Float.toString(mLastStalkerOffset));
-				mFirstRun = false;
-			}
+			
 			mCurrentTime = System.currentTimeMillis();			
 			
 			updatePosition();
@@ -203,6 +207,10 @@ public class WheatleySprite extends Sprite {
 			}
 			c.drawBitmap(mBitmap, mSrcRect, mDestRect, null);
 			updateVisibility();
+			if(mFirstRun) {
+				Log.i("", "mLastOffset: " + Float.toString(mLastStalkerOffset));
+				mFirstRun = false;
+			}
 		}		
 		doSomeLogging();		
 	}
@@ -236,7 +244,7 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	private void updatePosition() {
-		if(true) { // OLD IF: (mCurrentTime > mLastPositionUpdateTime + mPositionUpdatePeriod)
+		if(mCurrentTime > mLastPositionUpdateTime + mPositionUpdatePeriod) { // OLD IF: 
 			
 			doStalkerMode();
 
@@ -326,7 +334,8 @@ public class WheatleySprite extends Sprite {
 		}
 	}
 	
-	private void updatePositionY() {			
+	private void updatePositionY() {	
+		mAccelZone = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedY) / (2*mAccel));
 		//Log.i("Wheatley", "Current pos: " + Integer.toString(mPositionY) + ", Wanted position: " + Integer.toString(mNewPositionY) + ", Current speed: " + Double.toString(mSpeedY));
 		
 		if(((mLastPositionY + mAccelZone) > mPositionY && mDirectionY) || ((mLastPositionY - mAccelZone) < mPositionY && !mDirectionY)) {
@@ -367,15 +376,16 @@ public class WheatleySprite extends Sprite {
         mLastActivityTime = System.currentTimeMillis();
 	}
 	
-	private void updatePositionX() {		
-		if(Math.abs(mNewPositionX - mLastPositionX) < mAccelZone*2 && mSpeedX < 2*WHEATLEY_MINIMUM_SPEED) {
-			mAccelZone = Math.abs(mNewPositionX - mPositionX)/2;
+	private void updatePositionX() {	
+		mAccelZoneX = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedX) / (2*mAccel));
+		if(Math.abs(mNewPositionX - mLastPositionX) < (mAccelZoneX*2+mMaxSpeed) /*&& mSpeedX < 2*WHEATLEY_MINIMUM_SPEED DEBUG*/) {
+			mAccelZoneX = Math.abs((mNewPositionX+mMaxSpeed) - mLastPositionX)/2;
 		}
 		
-		if(((mNewPositionX - mAccelZone - mMaxSpeed) < mPositionX && mDirectionX) || ((mNewPositionX + mAccelZone + mMaxSpeed) > mPositionX && !mDirectionX)) {
+		if(((mNewPositionX - mAccelZoneX - mMaxSpeed) < mPositionX && mDirectionX) || ((mNewPositionX + mAccelZoneX + mMaxSpeed) > mPositionX && !mDirectionX)) {
 			mSpeedX = mSpeedX - (mAccel);
 		}		
-		else if(((mLastPositionX + mAccelZone) > mPositionX && mDirectionX) || ((mLastPositionX - mAccelZone) < mPositionX && !mDirectionX)) {
+		else if(((mLastPositionX + mAccelZoneX) > mPositionX && mDirectionX) || ((mLastPositionX - mAccelZoneX) < mPositionX && !mDirectionX)) {
 			if(mSpeedX < mMaxSpeed) {				
 				mSpeedX = mSpeedX + (mAccel);		
 			}
@@ -401,11 +411,13 @@ public class WheatleySprite extends Sprite {
 			mDirectionX = false;
 		}	
 		
-		if(mDirectionX)
+		if(mDirectionX){
 			mPositionX += mSpeedX;
-		else
+		}
+		else{
 			mPositionX -= mSpeedX;
-			       // kommet fram til destinasjonen
+		}
+		// kommet fram til destinasjonen
 		if(mNewPositionX+1 > mPositionX && mNewPositionX-1 < mPositionX && mSpeedX <= WHEATLEY_MINIMUM_SPEED) {
 			mNeedPositionXChange = false;
 			mDirectionX = !mDirectionX;
@@ -414,7 +426,7 @@ public class WheatleySprite extends Sprite {
 				mRandom = false; 
 			}
 			mSpeedX = 1.0;
-			mAccelZone = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedY) / (2*mAccel));		
+			mAccelZoneX = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedX) / (2*mAccel));		
 		}	
 		mLastActivityTime = System.currentTimeMillis();
 	}
@@ -610,10 +622,16 @@ public class WheatleySprite extends Sprite {
                 mNeedPositionZChange=true;
 
                 Log.i("WheatleySprite", "HIT!");
-                MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[mRandomGen.nextInt(3)]);
+                int currentSound=0;
+                while (currentSound==mPreviousSound){
+                	currentSound=mRandomGen.nextInt(18);
+                }
+                mPreviousSound=currentSound;
+                MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[currentSound]);
                 mp.start();
+                
                 mp.setOnCompletionListener(new OnCompletionListener() {
-
+                
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         // TODO Auto-generated method stub
@@ -622,6 +640,7 @@ public class WheatleySprite extends Sprite {
                         mNeedPositionXChange=false;
                         mNeedPositionYChange=false;
                         mNeedPositionZChange=false;
+                        
                     }
 
                 });

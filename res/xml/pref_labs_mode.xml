@@ -3,6 +3,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="pref_screen_labs">
     
+    <Preference
+        android:key="pref_get_premium"
+        android:title="@string/pref_get_premium_title"
+        android:summary="@string/pref_get_premium_summary" />
+    
     <ListPreference
         android:key="pref_mode"
         android:title="@string/pref_mode_title"
@@ -16,6 +21,12 @@
         android:title="@string/pref_category_labs"
         android:key="@string/pref_category_labs">
         
+        <!--  
+        <Preference
+            android:key="pref_labs_background_picker"
+            android:title="@string/pref_labs_background_source_title"
+            android:summary="@string/pref_labs_background_source_summary" />
+             -->
         <ListPreference
 	        android:key="pref_labs_background_source"
 	        android:title="@string/pref_labs_background_source_title"
@@ -24,7 +35,6 @@
 	        android:entries="@array/pref_labs_background_source_entries"
 	        android:entryValues="@array/pref_labs_background_source_values"
 	        android:defaultValue="included" />
-        
         <!--  
         	<Preference
             android:key="pref_background"

@@ -47,15 +47,10 @@ public class PrefsSpaceFragment extends PreferenceFragment implements OnSharedPr
         addPreferencesFromResource(R.xml.pref_space_mode);
   
         setListeners();
-        
-        // FJERN DETTE. DETTE ER KUN FOR DEBUGGING
-        //Intent backgroundIntent = new Intent(getActivity(),PrefsIncludedBackgrounds.class);
-		//startActivity(backgroundIntent);
-        
-        
+
     }
     private void setListeners(){
-    	BackgroundButton = (Preference) findPreference("pref_background");
+    	BackgroundButton = (Preference) findPreference("pref_background_picker");
     	LabsBackgroundSource = (Preference) findPreference("pref_labs_background_source");
     	SpaceBackgroundSource = (Preference) findPreference("pref_space_background_source");
         if (LabsBackgroundSource!=null) LabsBackgroundSource.setOnPreferenceChangeListener(this);
@@ -93,10 +88,10 @@ public class PrefsSpaceFragment extends PreferenceFragment implements OnSharedPr
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pictureActionIntent.setType("image/*");
             //pictureActionIntent.putExtra("return-data", true);
-            pictureActionIntent.setAction(Intent.ACTION_GET_CONTENT);
+            // PRE KITKAT: pictureActionIntent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(pictureActionIntent,SELECT_PICTURE);
 	        
-	        
+	     
 	        
 		}
 		Log.i("PrefsMainFragment", "onPrefChange returning");
@@ -134,7 +129,7 @@ public class PrefsSpaceFragment extends PreferenceFragment implements OnSharedPr
 	    }
 	 public String getPath(Uri uri) {
 	        String[] projection = { MediaStore.Images.Media.DATA };
-	        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+	        Cursor cursor = getActivity().getContentResolver().query(uri,  projection, null, null, null);
 	        int column_index;
 	        try {
 	        	column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -148,6 +143,9 @@ public class PrefsSpaceFragment extends PreferenceFragment implements OnSharedPr
 	        cursor.moveToFirst();
 	        return cursor.getString(column_index);
 	    }
+	 public String getPathHippieVersion(){
+		 return null;
+	 }
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
 		// TODO Auto-generated method stub
