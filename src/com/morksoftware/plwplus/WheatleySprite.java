@@ -577,7 +577,7 @@ public class WheatleySprite extends Sprite {
   }
 	
 	@Override
-	public void doSingleTapEvent(int x, int y) {
+	public void onSingleTap(int x, int y) {
         mLastActivityTime = System.currentTimeMillis();
 		int i = 0; // TODO Replace with option
 		
@@ -590,7 +590,7 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	@Override
-	public void doDoubleTapEvent(int x, int y) {
+	public void onDoubleTap(int x, int y) {
         mLastActivityTime = System.currentTimeMillis();
 		int i = 0; // TODO Replace with option
 		
@@ -727,5 +727,21 @@ public class WheatleySprite extends Sprite {
 			
 			Log.i("WheatleySprite", builder.toString());
 		}
+	}
+	
+	@Override
+	public boolean onSingleTap(float x, float y) {
+		onSingleTap((int) x, (int) y);
+		
+		// Return false. Not yet implemented in this wallpaper
+		return false;
+	}
+	
+	@Override
+	public boolean onDoubleTap(float x, float y) {
+		onDoubleTap((int) x, (int) y);
+		
+		// Return false. Not yet implemented in this wallpaper
+		return false;
 	}
 }

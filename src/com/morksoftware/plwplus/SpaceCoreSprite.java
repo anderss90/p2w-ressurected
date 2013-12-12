@@ -471,7 +471,7 @@ public class SpaceCoreSprite extends Sprite {
 
 
 	@Override
-	public void doSingleTapEvent(int x, int y) {
+	public void onSingleTap(int x, int y) {
 		if(mEnableTaps){
 			if(mDestRect.contains(x, y) && !mIsPlayingSound) {
 				mIsPlayingSound = true;
@@ -569,7 +569,7 @@ public class SpaceCoreSprite extends Sprite {
     }
 
 	@Override
-	public void doDoubleTapEvent(int x, int y) {
+	public void onDoubleTap(int x, int y) {
 		// TODO Auto-generated method stub
 		
 	}	
@@ -644,5 +644,21 @@ public class SpaceCoreSprite extends Sprite {
         //Log.i("scale:", "sx: " + Float.toString(sx) + "sy: "+Float.toString(sy));
 	}
 
-	
+	@Override
+	public boolean onSingleTap(float x, float y) {
+		
+		onSingleTap((int) x, (int) y);
+		
+		// Return false. Not yet implemented in this wallpaper
+		return false;
+	}
+
+	@Override
+	public boolean onDoubleTap(float x, float y) {
+		
+		onDoubleTap((int) x, (int) y);
+		
+		// Return false. Not yet implemented in this wallpaper
+		return false;
+	}	
 }

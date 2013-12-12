@@ -2,14 +2,9 @@ package com.morksoftware.plwplus;
 
 import java.util.Random;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -46,13 +41,10 @@ public class PortalWallpaperService extends WallpaperService {
 
 	// PortalEngine
 	private class PortalEngine extends Engine implements OnSharedPreferenceChangeListener {
-		@SuppressLint("NewApi")
-		public PortalEngine() {
-			   if(Build.VERSION.SDK_INT >= 15 ){
-			   this.setOffsetNotificationsEnabled(true);
-			   }
-		}
 		
+		// GestureDetector for detecting various gestures
+		private GestureDetector mGestureDetector;
+				
 		// Constants used for debugging
 		private static final String LOG = "PortalEngine";
 		private String mID;
@@ -78,10 +70,23 @@ public class PortalWallpaperService extends WallpaperService {
 			
 			Log.i(LOG, mID + " - onCreate");
 			
-			/* DEBUG DONE*/		
+			/* DEBUG DONE*/					
 			mPrefs = new PrefsHelper(getApplicationContext());
 			mPrefs.registerOnSharedPrefListener(this);		
 			mThread = new PainterThread(surfaceHolder, getApplicationContext(), isPreview());
+			
+			mGestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
+				
+				@Override
+				public boolean onSingleTapConfirmed(MotionEvent e) {					
+					return mThread.onSingleTap(e.getX(), e.getY());
+				}
+
+				@Override
+				public boolean onDoubleTap(MotionEvent e) {							
+					return mThread.onDoubleTap(e.getX(), e.getY());
+				}				
+			});
 		}
 
 		@Override
@@ -187,7 +192,18 @@ public class PortalWallpaperService extends WallpaperService {
 			/* DEBUG DONE */		
 		}
 		
+		
+		
         @Override
+		public void onTouchEvent(MotionEvent event) {
+			super.onTouchEvent(event);
+			
+			if(mGestureDetector != null) {
+				mGestureDetector.onTouchEvent(event);
+			}
+		}
+
+		@Override
         public Bundle onCommand(String action, int x, int y, int z, Bundle extras, boolean resultRequested) {
         	super.onCommand(action, x, y, z, extras, resultRequested);   
         	

@@ -8,7 +8,7 @@ import android.graphics.Matrix;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-public class PainterThread extends Thread {
+public class PainterThread extends Thread implements OnTapListener {
 	// Constants for debugging
 	private static final String LOG = "PainterThread";
 	
@@ -136,8 +136,6 @@ public class PainterThread extends Thread {
 	                	
 	                	if(mSprite != null) {
 	                		mSprite.doDraw(c);
-	                    	
-	                    	handleTaps();
 	                	}          
 	                	else {
 	                		pausePainting();
@@ -378,28 +376,49 @@ public class PainterThread extends Thread {
     	}    	
     }
             
-    private void handleTaps() {    	
-    	if(mFirstTap) {    		
-    		if(System.currentTimeMillis() > mLastTapTime + mDoubleTapTime) {
-    			handleSingleTap();  
-    			mFirstTap = !mFirstTap;
-    		}
-    		else {
-    			if(mSecondTap) {
-    				handleDoubleTap();
-    				
-    				mFirstTap = !mFirstTap;
-    				mSecondTap = !mSecondTap;
-    			}
-    		}
-    	}
-    }
+//    private void handleTaps() {    	
+//    	if(mFirstTap) {    		
+//    		if(System.currentTimeMillis() > mLastTapTime + mDoubleTapTime) {
+//    			handleSingleTap();  
+//    			mFirstTap = !mFirstTap;
+//    		}
+//    		else {
+//    			if(mSecondTap) {
+//    				handleDoubleTap();
+//    				
+//    				mFirstTap = !mFirstTap;
+//    				mSecondTap = !mSecondTap;
+//    			}
+//    		}
+//    	}
+//    }
     
-    private void handleSingleTap() {    	
-    	mSprite.doSingleTapEvent(mTapX, mTapY);    	
-    }
+//    private void handleSingleTap() {    	
+//    	mSprite.onSingleTap(mTapX, mTapY);    	
+//    }
+//    
+//    private void handleDoubleTap() {    	
+//    	mSprite.onDoubleTap(mTapX, mTapY);
+//    }
     
-    private void handleDoubleTap() {    	
-    	mSprite.doDoubleTapEvent(mTapX, mTapY);
-    }
+	@Override
+	public boolean onSingleTap(float x, float y) {
+		
+		if(mSprite != null) {
+			mSprite.onSingleTap(x, y);
+		}
+		
+		// Not yet implemented
+		return false;
+	}
+	@Override
+	public boolean onDoubleTap(float x, float y) {
+		
+		if(mSprite != null) {
+			mSprite.onDoubleTap(x, y);
+		}
+		
+		// Not yet implemented
+		return false;
+	}
 }
