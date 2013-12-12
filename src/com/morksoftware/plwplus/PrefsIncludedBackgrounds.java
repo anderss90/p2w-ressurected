@@ -11,6 +11,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 //import android.renderscript.Allocation.MipmapControl;
 import android.util.Log;
@@ -40,6 +41,7 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
     private ListView mImageList;
     private Context mCtx = this;
     private PrefsHelper mPrefs;
+    private int maxWidth=600;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -162,6 +164,7 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		iv.setLayoutParams(new ListView.LayoutParams(mDisplay.getWidth(),(int)ListHeight));
 		    		Log.i("mDisplay.getwidth",Integer.toString(mDisplay.getWidth()));
 		    		iv.setBackgroundResource(0);
+		    		iv.setBackgroundColor(Color.BLACK);
 		    		
 		    		//tegner bilder selv. Innebygde laster hele full HD-bildet -_-
 		    		BitmapFactory.Options  bmOptions = new BitmapFactory.Options();
@@ -172,9 +175,14 @@ public class PrefsIncludedBackgrounds extends Activity implements OnClickListene
 		    		bmOptions.inJustDecodeBounds = true;
 		    		// Sample the asset, without loading the pixels
 		    		BitmapFactory.decodeResource(mCtx.getResources(), mPics[position], bmOptions);
-		    		int sourceImageWidth=bmOptions.outWidth;
+		    		float sourceImageWidth=bmOptions.outWidth;
+		    		float screenWidth= mDisplay.getWidth();
+		    		if (screenWidth>maxWidth){
+		    			screenWidth=maxWidth;
+		    		}
+		    		int scaleFactor;
+		    		scaleFactor= (int) (sourceImageWidth/screenWidth);
 		    		
-		    		int scaleFactor= (int)sourceImageWidth/480;
 		    		Log.i("PrefsInclBGs","scaleFactor: "+scaleFactor);
 		    		bmOptions.inSampleSize=scaleFactor;
 		    		bmOptions.inJustDecodeBounds = false;

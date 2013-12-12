@@ -102,6 +102,7 @@ public class WheatleySprite extends Sprite {
     // Sounds
     private int[] mSoundResources = {R.raw.labs01, R.raw.labs02, R.raw.labs04, R.raw.labs05, R.raw.labs06, R.raw.labs07, R.raw.labs08, R.raw.labs09, 
 			R.raw.labs10, R.raw.labs11, R.raw.labs12, R.raw.labs13, R.raw.labs14, R.raw.labs15, R.raw.labs16, R.raw.labs17, R.raw.labs18};
+    private int mNumberOfSounds=18;
     private boolean mIsPlayingSound = false;
     private Context mCtx;
     private int mPreviousSound;
@@ -613,6 +614,7 @@ public class WheatleySprite extends Sprite {
             }
 
             setNewPositionY(0,false);
+            setNewPositionZ(0);
         }
         else {
             if(mEnableSound && mDestRect.contains(x, y) && !mIsPlayingSound && !mNeedPositionXChange && !mNeedPositionYChange && !mNeedPositionZChange ) {
@@ -622,9 +624,9 @@ public class WheatleySprite extends Sprite {
                 mNeedPositionZChange=true;
 
                 Log.i("WheatleySprite", "HIT!");
-                int currentSound=0;
+                int currentSound=mRandomGen.nextInt(mNumberOfSounds);
                 while (currentSound==mPreviousSound){
-                	currentSound=mRandomGen.nextInt(18);
+                	currentSound=mRandomGen.nextInt(mNumberOfSounds);
                 }
                 mPreviousSound=currentSound;
                 MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[currentSound]);
@@ -648,7 +650,7 @@ public class WheatleySprite extends Sprite {
             else if(x != mPositionX && !mDestRect.contains(x, y)) {
                 //Log.i("move", "wheatley");
                 setNewPositionX(x - (mSpriteWidth/2), mRandom);
-                setNewPositionY(0,true);
+                setNewPositionY(0,false);
             }
         }
 	}
@@ -668,11 +670,11 @@ public class WheatleySprite extends Sprite {
 			if(mTapAction == 2) {
 				setNewPositionZ(0);
 			}
-			
+			setNewPositionZ(0);
 			setNewPositionY(0,false);
 		}
 		
-		if(mDestRect.contains(x, y)) {			
+		else if(mDestRect.contains(x, y)) {			
 			// Tap action = Move wheatley i y direction
 			if(mTapAction == 1) {
 				if(mPositionY == mDownPositionY)
@@ -686,6 +688,7 @@ public class WheatleySprite extends Sprite {
 				}
 			}
 		}
+		else doSingleTapOptionOne(x, y);
 	}
 	
 	private void doDoubleTapOptionTwo(int x, int y) {

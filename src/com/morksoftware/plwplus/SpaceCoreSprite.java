@@ -93,6 +93,7 @@ public class SpaceCoreSprite extends Sprite {
 	private boolean mFirstRun = true;
 	// Sound 
 	private int[] mSoundResources = {R.raw.space01, R.raw.space02, R.raw.space04, R.raw.space05, R.raw.space20, R.raw.space22, R.raw.space24, R.raw.space25, R.raw.space26, R.raw.space27, R.raw.space28};
+	private int mNumberOfSounds=11;
 	private boolean mIsPlayingSound = false;
 	private int mPreviousSound;
 
@@ -443,13 +444,7 @@ public class SpaceCoreSprite extends Sprite {
                     	mDirectionZ=false;
                     }
                     //Log.i("side=", "Bottom: ");
-                    if (mPositionZ<-200){
-                    	mDirectionZ=true;
-                    }
                     
-                    else if (mPositionZ>-200){
-                    	mDirectionZ=false;
-                    }
                 }
                 if (mPositionY+mSpriteHeigth > mTopBoundry) {
                     mTopAction=false;
@@ -477,9 +472,9 @@ public class SpaceCoreSprite extends Sprite {
 				mIsPlayingSound = true;
 				
 				Log.i("SpaceCoreSprite", "HIT!");
-				int currentSound=0;
+				int currentSound=mRandomGen.nextInt(mNumberOfSounds);
                 while (currentSound==mPreviousSound){
-                	currentSound=mRandomGen.nextInt(11);
+                	currentSound=mRandomGen.nextInt(mNumberOfSounds);
                 }
                 mPreviousSound=currentSound;
 				MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[currentSound]);

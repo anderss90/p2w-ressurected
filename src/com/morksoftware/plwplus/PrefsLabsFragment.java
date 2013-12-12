@@ -1,12 +1,19 @@
 package com.morksoftware.plwplus;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import com.morksoftware.plwplus.PrefsIncludedBackgrounds;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
+import android.graphics.BitmapRegionDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -22,17 +29,22 @@ import android.support.v4.preference.PreferenceManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 import com.morksoftware.plwplus.Utils;
+@SuppressLint("NewApi")
 public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, OnPreferenceChangeListener, OnPreferenceClickListener {
 	
+	private static final int SELECT_PICTURE = 1;
 	private static int SELECT_FROM_INCLUDED = 2;
+	private static int GALLERY_INTENT_CALLED = 3;
+	private static int GALLERY_KITKAT_INTENT_CALLED = 4;
 	private PrefsHelper mPrefs;
 	private Preference BackgroundButton;
 	private Preference LabsBackgroundSource;
 	private Preference SpaceBackgroundSource;
 	private Preference mModeButton=null;
-	private Preference mEnableSoundButton;
+	private Preference mEnableSoundButtonLabs;
+	private Preference mEnableSoundButtonSpace;
 	private Preference mPremiumButton;
-	private static final int SELECT_PICTURE = 1;
+	
     private String selectedImagePath;
     private String PreviousBackgroundSource;
     private PreferenceScreen preference_screen;
@@ -105,11 +117,19 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
     	
     	// Handling EnableSound
     	
-    	if (mEnableSoundButton!=null){
+    	if (mEnableSoundButtonLabs!=null){
 	    	if (mExtraFeaturesUnlocked==false){
 	    		//mEnableSoundButton.setEnabled(false);
-	    		mEnableSoundButton.setSummary("This feature requires premium");
-	    		
+	    		mEnableSoundButtonLabs.setSummary("This feature requires premium");
+	    		mEnableSoundButtonLabs.setEnabled(false);
+	    	}
+	    	
+    	}
+    	if (mEnableSoundButtonSpace!=null){
+	    	if (mExtraFeaturesUnlocked==false){
+	    		//mEnableSoundButton.setEnabled(false);
+	    		mEnableSoundButtonSpace.setSummary("This feature requires premium");
+	    		mEnableSoundButtonSpace.setSelectable(false);
 	    	}
 	    	
     	}
@@ -124,13 +144,15 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
     	LabsBackgroundSource = (Preference) findPreference("pref_labs_background_source");
     	SpaceBackgroundSource = (Preference) findPreference("pref_space_background_source");
     	mPremiumButton = (Preference) findPreference("pref_get_premium");
-    	mEnableSoundButton = (Preference) findPreference("pref_labs_sound");
+    	mEnableSoundButtonLabs = (Preference) findPreference("pref_labs_sound");
+    	mEnableSoundButtonSpace = (Preference) findPreference("pref_space_sound");
         if (LabsBackgroundSource!=null) LabsBackgroundSource.setOnPreferenceChangeListener(this);
         if (SpaceBackgroundSource!=null) SpaceBackgroundSource.setOnPreferenceChangeListener(this);
         if (mModeButton!=null) mModeButton.setOnPreferenceChangeListener(this);
         if (BackgroundButton!=null) BackgroundButton.setOnPreferenceClickListener(this);
         if (mPremiumButton!=null) mPremiumButton.setOnPreferenceClickListener(this);
-        if (mPremiumButton!=null) mEnableSoundButton.setOnPreferenceClickListener(this);
+        if (mEnableSoundButtonLabs!=null) mEnableSoundButtonLabs.setOnPreferenceClickListener(this);
+        if (mEnableSoundButtonSpace!=null) mEnableSoundButtonSpace.setOnPreferenceClickListener(this);
         
     }
     
@@ -152,14 +174,20 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 				startActivityForResult(backgroundIntent,SELECT_FROM_INCLUDED);
 			}
 			else if (((String)newvalue).equals("gallery") && mExtraFeaturesUnlocked){
-		        Intent pictureActionIntent = new Intent(
-	                    Intent.ACTION_PICK,
-	                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-	            pictureActionIntent.setType("image/*");
-	            pictureActionIntent.setAction(Intent.ACTION_GET_CONTENT);
-	            startActivityForResult(pictureActionIntent,SELECT_PICTURE);
+				
+				if (Build.VERSION.SDK_INT <19){
+				    Intent intent = new Intent(); 
+				    intent.setType("image/*");
+				    intent.setAction(Intent.ACTION_GET_CONTENT);
+				    startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_picture)),GALLERY_INTENT_CALLED);
+				} else {
+				    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+				    intent.addCategory(Intent.CATEGORY_OPENABLE);
+				    intent.setType("image/jpeg");
+				    startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
+				}
 			}
-			 else if(mExtraFeaturesUnlocked==false) {
+			else if(newvalue.equals("gallery") && mExtraFeaturesUnlocked==false) {
 				 getPremiumPopUp();
 				 mPrefs.disablePremiumFeatures();
 			 }
@@ -175,24 +203,46 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 		Log.i("PrefsLabsFragment", "onPrefChange returning");
 		return true;
 	}
-	 public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	        if (resultCode==-1) {
-	            if (requestCode == SELECT_PICTURE) {
-	                Uri selectedImageUri = data.getData();
-	                //selectedImagePath = getPath(selectedImageUri);
-	                selectedImagePath = selectedImageUri.toString();
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		 super.onActivityResult(requestCode, resultCode, data);
+		 if (null == data) return;
+	        if (resultCode==Activity.RESULT_OK) {
+	        	
+	        	Uri originalUri = null;
+	        	if (requestCode==GALLERY_INTENT_CALLED || requestCode==GALLERY_KITKAT_INTENT_CALLED){
+		            if (requestCode == GALLERY_INTENT_CALLED) {
+		            	Log.i("PrefsLabsFragment","Activityresult with requestcode: "+requestCode);
+		                originalUri = data.getData();
+		            } 
+		            else if (requestCode == GALLERY_KITKAT_INTENT_CALLED) {
+		            	Log.i("PrefsLabsFragment","Activityresult with requestcode: "+requestCode);
+		                originalUri = data.getData();
+		                final int takeFlags = data.getFlags()
+		                        & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+		                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+		                // Check for the freshest data.
+		                getActivity().getContentResolver().takePersistableUriPermission(originalUri, takeFlags);
+		            }
+		            selectedImagePath = originalUri.toString();
 	                Log.i("PrefsFragment","uri: "+selectedImagePath);
-	                if (selectedImagePath!=null){
-		                mPrefs.setWallpaperBackgroundPath(selectedImagePath);
+	                InputStream stream = null;
+	        		try {
+	        			stream = getActivity().getContentResolver().openInputStream(originalUri);
+	        			BitmapRegionDecoder regionDecoder = null;
+	        			regionDecoder = BitmapRegionDecoder.newInstance(stream, false);
+	        			mPrefs.setWallpaperBackgroundPath(selectedImagePath);
 		                mPrefs.setBackgroundSource(mPrefs.PREF_BACKGROUND_SOURCE_GALLERY);
 		                PreviousBackgroundSource=mPrefs.PREF_BACKGROUND_SOURCE_GALLERY;
-	                }
-	                else {
-	                	Toast.makeText(getActivity(), "Error resolving image path. Only images on stored locally are supported", Toast.LENGTH_SHORT).show();
+	        		} catch (Exception e1) {
+	        			// TODO Auto-generated catch block
+	        			Log.i("BitmapManager","OpenInputstream failed");
+	        			e1.printStackTrace();
+	        			Toast.makeText(getActivity(), "Error resolving image path. Only images on stored locally are supported", Toast.LENGTH_SHORT).show();
 	                	return;
-	                }
-	            }
+	        		} 
+	        	}
 	            else if (requestCode==SELECT_FROM_INCLUDED){
+	            	Log.i("PrefsLabsFragment","Activityresult with requestcode: "+requestCode);
 	            	mPrefs.setBackgroundSource(mPrefs.PREF_BACKGROUND_SOURCE_INCLUDED);
 		        	PreviousBackgroundSource=mPrefs.PREF_BACKGROUND_SOURCE_INCLUDED;
 		        }
@@ -203,9 +253,6 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 	        	Log.i("PrefsMainFrag","Prev_BG_Source saves the day");
 	        	mPrefs.setBackgroundSource(PreviousBackgroundSource);
 	        }
-	        //else Toast.makeText(getActivity(), "Background saved", Toast.LENGTH_SHORT).show();
-	        
-	        
 	    }
 	 public String getPath(Uri uri) {
 	        String[] projection = { MediaStore.Images.Media.DATA };
@@ -240,7 +287,7 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 			Intent backgroundIntent = new Intent(getActivity(),PrefsIncludedBackgrounds.class);
 			startActivityForResult(backgroundIntent,SELECT_FROM_INCLUDED);
 		}
-		else if(preference==mEnableSoundButton){
+		else if(preference==mEnableSoundButtonLabs || preference==mEnableSoundButtonSpace){
 			if (mExtraFeaturesUnlocked==false){
 				getPremiumPopUp();
 				mPrefs.disablePremiumFeatures();

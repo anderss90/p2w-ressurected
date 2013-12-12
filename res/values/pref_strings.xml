@@ -58,6 +58,8 @@
    	 <string name="pref_space_tap_enable_title"> Enable tap actions </string>
    	 <string name="pref_space_tap_enable_summary"></string>
    	 
+   	 
+   	 <string name="select_picture">Select image from</string>
    	 <!-- 
    	 <string name="pref_space_fps_title">Performance</string>
    	 <string name="pref_space_fps_dialog">Frames per second</string>

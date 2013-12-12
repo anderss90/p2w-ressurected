@@ -45,6 +45,7 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
         	mPrefs.setPremiumFromUtils();
         }
         */
+        mPrefs.setPremium(true);
     	mExtraFeaturesUnlocked=mPrefs.getPremium();
         
         
@@ -82,8 +83,7 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
     public void onSharedPreferenceChanged(SharedPreferences sharedPref, String key) {
 		// TODO Auto-generated method stub
 		
-		if ((key.equals(mPrefs.PREF_SPACE_BACKGROUND_SOURCE)|| key.equals(mPrefs.PREF_LABS_BACKGROUND_SOURCE) ||key.equals("pref_mode") ||key.equals("pref_space_sound")
-				 ||key.equals("pref_labs_sound") ||key.equals("pref_premium_enabled")) && hasBeenCreated){
+		if ((key.equals(mPrefs.PREF_SPACE_BACKGROUND_SOURCE)|| key.equals(mPrefs.PREF_LABS_BACKGROUND_SOURCE) ||key.equals("pref_mode") ||key.equals("pref_premium_enabled")) && hasBeenCreated){
 			Log.i("PrefsMainMenu", "OnSharedPrefChanged");
 			try{
 				fragmentTransaction = fragmentManager.beginTransaction();

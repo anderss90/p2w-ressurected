@@ -42,6 +42,15 @@
 		    android:summary=""
 		    android:defaultValue="hey_arnold"/>
 		    -->
+		    
+		    <ListPreference
+	        android:key="pref_labs_speed"
+	        android:title="@string/pref_labs_speed_title"
+	        android:summary="@string/pref_labs_speed_summary"
+	        android:dialogTitle="@string/pref_labs_speed_dialog"
+	        android:entries="@array/pref_labs_speed_entries"
+	        android:entryValues="@array/pref_labs_speed_values"
+	        android:defaultValue= "50" />
             
 	   <ListPreference
 	        android:key="pref_labs_position"
@@ -53,20 +62,9 @@
 	        android:defaultValue="Both" />
 	   
 	   
-		<ListPreference
-	        android:key="pref_labs_speed"
-	        android:title="@string/pref_labs_speed_title"
-	        android:summary="@string/pref_labs_speed_summary"
-	        android:dialogTitle="@string/pref_labs_speed_dialog"
-	        android:entries="@array/pref_labs_speed_entries"
-	        android:entryValues="@array/pref_labs_speed_values"
-	        android:defaultValue= "50" />
 		
-		<CheckBoxPreference
-        android:key="pref_labs_sound"
-        android:title="@string/pref_labs_sound_title"
-        android:summary="@string/pref_labs_sound_summary"
-        android:defaultValue="true" />
+		
+		
 	
 		
 		<CheckBoxPreference
@@ -84,6 +82,12 @@
 	        android:entries="@array/pref_labs_random_movement_interval_entries"
 	        android:entryValues="@array/pref_labs_random_movement_interval_values"
 	        android:defaultValue="10" />
+		
+		<CheckBoxPreference
+        android:key="pref_labs_sound"
+        android:title="@string/pref_labs_sound_title"
+        android:summary="@string/pref_labs_sound_summary"
+        android:defaultValue="true" />
 		
 		<!-- 
 		<ListPreference
