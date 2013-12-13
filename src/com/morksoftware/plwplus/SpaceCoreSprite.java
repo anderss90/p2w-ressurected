@@ -164,7 +164,7 @@ public class SpaceCoreSprite extends Sprite {
         DisplayMetrics dm = new DisplayMetrics();
 	    ((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         float xDpi = dm.xdpi;
-		mBaseSpeed = (float) (2*0.028*xDpi);
+		mBaseSpeed = (float) (3*0.028*xDpi);
         mPrefs = new PrefsHelper(ctx);
         
         onSharedPreferenceChanged();
