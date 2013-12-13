@@ -42,7 +42,7 @@ public class SpaceCoreSprite extends Sprite {
 	
 	// Animation controls
 	private long mLastAnimationUpdateTime = 0;
-	private int mAnimationUpdatePeriod = 40;
+	private int mAnimationUpdatePeriod = 50;
     private long mLastAngleUpdateTime = 0;
     private int mAngleUpdatePeriod = 200;
 	private int mCurrentFrame = 0;
@@ -173,7 +173,7 @@ public class SpaceCoreSprite extends Sprite {
 	
 	@Override
 	public void onSharedPreferenceChanged(){
-		mMaxSpeed=(float) (mPrefs.getMovementSpeed()*mBaseSpeed*0.01);
+		mMaxSpeed =(float) (mPrefs.getMovementSpeed()*mBaseSpeed*0.01);
 		mEnableSound = mPrefs.getEnableSound();
 		mEnableTaps = mPrefs.getTapActionsEnabled();
 		//Log.i("Wheatlet_onsharedpref", Float.toString(mMaxSpeed) + ", " + Float.toString(mAccel));
@@ -350,8 +350,7 @@ public class SpaceCoreSprite extends Sprite {
         else if (mDirectionZ==false){
         	mPositionZ-=1;
         }
-        
-        Log.i("SpaceCoreSprite updatePosZ","mPosZ: "+mPositionZ);
+        Log.i("SpaceCoreSprite updatePosZ"," mPosX: "+mPositionX+" mPosY: "+mPositionY+" mPosZ: "+mPositionZ+" mSpeed: "+mSpeed);
     }
 	
 	private void updateAngleAndPositionZ() {
@@ -621,6 +620,9 @@ public class SpaceCoreSprite extends Sprite {
 
         else {
             mSpeed = (1-(-mPositionZ/ 1000)) * mMaxSpeed;
+            if (mSpeed<1.5){
+            	mSpeed=(float) 1.5;
+            }
         }
 
     }

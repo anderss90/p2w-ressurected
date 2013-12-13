@@ -40,14 +40,15 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
         
         
         //DEBUG
-        /*
+        
         if(hasBeenCreated==false){
         	mPrefs.setPremiumFromUtils();
         }
-        */
-        mPrefs.setPremium(true);
+        //mPrefs.setPremium(true);
     	mExtraFeaturesUnlocked=mPrefs.getPremium();
-        
+        if (mExtraFeaturesUnlocked){
+        	mPrefs.disablePremiumFeatures();
+        }
         
         mPrefs.registerOnSharedPrefListener(this); 
         

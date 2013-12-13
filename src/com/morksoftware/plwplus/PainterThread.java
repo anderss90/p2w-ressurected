@@ -105,7 +105,7 @@ public class PainterThread extends Thread implements OnTapListener {
 		//scheduling
 		
 		mDoubleTapTime = 200;
-		scheduleInterval=33;
+		scheduleInterval=20;
 		
 				
 				
@@ -159,7 +159,9 @@ public class PainterThread extends Thread implements OnTapListener {
 	                    }
 	                }
 				}
+				mlastLoopTime=System.currentTimeMillis();
 			}
+			
 		}
 		 
 	}

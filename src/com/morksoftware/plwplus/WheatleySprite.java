@@ -95,7 +95,7 @@ public class WheatleySprite extends Sprite {
 	// Animation controls
 	private long mCurrentTime;
 	private long mLastAnimationUpdateTime = 0;
-	private int mAnimationUpdatePeriod = 40;
+	private int mAnimationUpdatePeriod = 50;
 	private int mCurrentFrame = 0;
 	private boolean mReverseAnimation = false;
 
@@ -157,7 +157,7 @@ public class WheatleySprite extends Sprite {
 		// these will return the actual dpi horizontally and vertically
 		float xDpi = dm.xdpi;
 		
-		mBaseSpeed = (float) (2*0.028*xDpi);
+		mBaseSpeed = (float) (3*0.028*xDpi);
 		mAccel=(float) 0.5;
 		Log.i("MAX OG ACCEL", Float.toString(mMaxSpeed) + ", " + Float.toString(mAccel));
 		
@@ -365,8 +365,8 @@ public class WheatleySprite extends Sprite {
 			mPositionY -= mSpeedY;
 			mDirectionY = false;
 		}			
-		                       //kommet fram
-		if(mNewPositionY == mPositionY) {
+		                       //kommet fram mNewPositionX+1 > mPositionX && mNewPositionX-1 < mPositionX
+		if(mNewPositionY+mSpeedY > mPositionY && mNewPositionY-mSpeedY<mPositionY) {
 			mNeedPositionYChange = false;
 			mLastPositionY = mPositionY;
 			mSpeedY = WHEATLEY_MINIMUM_SPEED;
@@ -419,9 +419,10 @@ public class WheatleySprite extends Sprite {
 			mPositionX -= mSpeedX;
 		}
 		// kommet fram til destinasjonen
-		if(mNewPositionX+1 > mPositionX && mNewPositionX-1 < mPositionX && mSpeedX <= WHEATLEY_MINIMUM_SPEED) {
+		if(mNewPositionX+mSpeedX > mPositionX && mNewPositionX-mSpeedX < mPositionX && mSpeedX <= WHEATLEY_MINIMUM_SPEED) {
 			mNeedPositionXChange = false;
 			mDirectionX = !mDirectionX;
+			mPositionX=mNewPositionX;
 			mLastPositionX = mPositionX;
 			if (mRandom && !mNeedPositionZChange && !mNeedPositionYChange) {
 				mRandom = false; 
@@ -464,8 +465,9 @@ public class WheatleySprite extends Sprite {
 			mDirectionZ = false;
 		}	
 		
-		if(mNewPositionZ == mPositionZ) {
+		if(mNewPositionZ+mSpeedZ > mPositionZ && mNewPositionZ-mSpeedZ<mPositionZ) {
 			mNeedPositionZChange = false;
+			mPositionZ=mNewPositionZ;
 			mLastPositionZ = mPositionZ;
 			mSpeedZ = 1.0;
 			mAccelZone = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedZ) / (2*mAccel));

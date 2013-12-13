@@ -23,7 +23,7 @@ public class PrefsHelper {
 	public static final String PREF_LABS_BACKGROUND_ID = "pref_labs_background_id";
 	public static final String PREF_LABS_BACKGROUND_PATH = "pref_labs_background_path";
 	public static final int PREF_SPACE_BACKGROUND_DEFAULT_ID = R.drawable.raw_space_background_1;
-	public static final int PREF_LABS_BACKGROUND_DEFAULT_ID = R.drawable.labs_raw_background_3_fix;
+	public static final int PREF_LABS_BACKGROUND_DEFAULT_ID = R.drawable.background_labs23;
 	public static final String WALLPAPER_BACKGROUND_DEFAULT = "Labs";
 	
 	public static final String PREF_LABS_BACKGROUND_SOURCE = "pref_labs_background_source";
@@ -58,8 +58,8 @@ public class PrefsHelper {
 	}
 	public void disablePremiumFeatures(){
 		if (getPremium()==false){
-			setBackgroundSource(PREF_BACKGROUND_SOURCE_DEFAULT);
 			setWallpaperMode(PREF_WALLPAPER_MODE_DEFAULT);
+			setBackgroundSource(PREF_BACKGROUND_SOURCE_DEFAULT);
 			setSoundEnabled(false);
 		}
 	}
