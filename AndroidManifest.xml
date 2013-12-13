@@ -16,7 +16,7 @@
         android:label="@string/app_name">
         
         <service android:name=".PortalWallpaperService"
-            	 android:label="@string/app_name"
+              android:label="@string/app_name"
                  android:permission="android.permission.BIND_WALLPAPER">
             
             <intent-filter>
