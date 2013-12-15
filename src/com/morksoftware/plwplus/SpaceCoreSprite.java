@@ -636,7 +636,7 @@ public class SpaceCoreSprite extends Sprite {
 		
 		if(doDebug) {
 			//Log.i("SpaceCore", "Position: " + Integer.toString(mDestRect.left) + ", " + Integer.toString(mDestRect.top)+ " leftBoundry: " + Integer.toString(mLeftBoundry) + " rightBoundry: " + Integer.toString(mRightBoundry) + " angle: "+ Double.toString(mAngle) + " speed: " + Float.toString(mSpeed)            );
-            Log.i("SpaceCore", "mAngle 2 : "+ Double.toString(mAngle2) + "mTapAnimation3 :" + Boolean.toString(mTapAnimation3) );
+            //Log.i("SpaceCore", "mAngle 2 : "+ Double.toString(mAngle2) + "mTapAnimation3 :" + Boolean.toString(mTapAnimation3) );
 		}   //Log.i("lol", "Height: "+ Integer.toString(mSpriteHeigth));
         //Log.i("scale:", "sx: " + Float.toString(sx) + "sy: "+Float.toString(sy));
 	}

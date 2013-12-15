@@ -301,12 +301,14 @@ private void updateWallpaperMetrics(boolean isPreview) {
 	mDesiredHeight = mDisplay.getHeight();	
 	
 	// Hard capping image sizes for memory efficiency
+	/*
 	if (mDesiredWidth>IMAGE_WIDTH_MAX){
 		mDesiredWidth=IMAGE_WIDTH_MAX;
 	}
 	if (mDesiredHeight>IMAGE_HEIGHT_MAX){
 		mDesiredHeight=IMAGE_HEIGHT_MAX;
 	}
+	*/
 	
 	Log.i(TAG, "mDesiredWidth: " + Integer.toString(mDesiredWidth) + ", mDesiredHeight: " + Integer.toString(mDesiredHeight));
 }

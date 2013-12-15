@@ -296,14 +296,20 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 		}
 		else if (preference==mPremiumButton){
 			if (mExtraFeaturesUnlocked){
+				Toast.makeText(getActivity(), "Premium is already Enabled", Toast.LENGTH_SHORT).show();
+				/*
 				mPrefs.setPremium(false);
 				mExtraFeaturesUnlocked=false;
 				Toast.makeText(getActivity(), "Premium Disabled", Toast.LENGTH_SHORT).show();
+				*/
 			}
 			else {
-			mPrefs.setPremium(true);
-			mExtraFeaturesUnlocked=true;
-			Toast.makeText(getActivity(), "Premium Enabled", Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse("market://details?id=com.morksoftware.keytest"));
+			startActivity(intent);
+			//mPrefs.setPremium(true);
+			//mExtraFeaturesUnlocked=true;
+			//Toast.makeText(getActivity(), "Premium Enabled", Toast.LENGTH_SHORT).show();
 			}
 		
 		}

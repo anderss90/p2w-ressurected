@@ -112,6 +112,8 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
     public void onResumeFragments(){
     	Log.i("PrefsMainFragment", "OnPostResumed");
     	super.onResumeFragments();
+    	mPrefs.setPremiumFromUtils();
+    	
     	if (modeFlag){
     		fragmentTransaction = fragmentManager.beginTransaction();
 	    	pref_mode = mPrefs.getWallpaperMode();
@@ -129,6 +131,7 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
     @Override
     public void onResume(){
     	super.onResume();
+    	mPrefs.setPremiumFromUtils();
     	mPrefs.registerOnSharedPrefListener(this);
     }
     @Override

@@ -8,7 +8,7 @@ public class Utils {
 	public static final boolean keyIsInstalled(Context ctx) {
 		String thisPackage = "com.morksoftware.plwplus";
 		//String keyPackage = "com.morksoftware.plwkey";
-		String keyPackage = "com.example.keytest";
+		String keyPackage = "com.morksoftware.keytest";
 		int match = ctx.getPackageManager().checkSignatures(thisPackage, keyPackage);
 		
 		return (match == PackageManager.SIGNATURE_MATCH) ? true : false;
