@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Debug;
 import android.util.Log;
 import android.view.Display;
+import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -158,7 +159,7 @@ public class BackgroundBitmapManager {
 				// This time we want to decode completely (With pixels)
 				bmOptions.inJustDecodeBounds = false;
 				bmOptions.inSampleSize=(int) scalingFactor;
-				Log.i("TAG","inTargetDensity:"+Integer.toString(bmOptions.inTargetDensity)+" InDensity: "+Integer.toString(bmOptions.inDensity));			
+				//Log.i("TAG","inTargetDensity:"+Integer.toString(bmOptions.inTargetDensity)+" InDensity: "+Integer.toString(bmOptions.inDensity));			
 				Log.i(TAG, "loadScaledBitmap() - Background scaled with BitmapRegionDecoder");
 				
 				// Decode the asset
@@ -289,16 +290,36 @@ private void updateWallpaperMetrics(boolean isPreview) {
 		else
 			mDesiredWidth = mDisplay.getWidth() * 2;
 			*/
-		mDesiredWidth = mDisplay.getWidth() * 2;
+		
+		
+		//With orientation
+		/*
+		int orientation = mDisplay.getRotation();
+
+		if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
+		    // TODO: add logic for landscape mode here 
+			mDesiredWidth = mDisplay.getWidth();
+			mDesiredHeight = mDisplay.getHeight();
+		}
+		*/
+		if (mDisplay.getHeight()<mDisplay.getWidth()){
+			mDesiredWidth = mDisplay.getWidth();
+			mDesiredHeight = mDisplay.getHeight();
+		}
+		else {
+			mDesiredWidth = mDisplay.getWidth() * 2;
+			mDesiredHeight = mDisplay.getHeight();
+		}
 		
 	}
 	else {
 		Log.i(TAG, "updateWallpaperMetrics() - isPreview = TRUE");
 		mDesiredWidth = mDisplay.getWidth();
+		mDesiredHeight = mDisplay.getHeight();
 	}
 	
 	// Get the desired height, no scaling necessary
-	mDesiredHeight = mDisplay.getHeight();	
+		
 	
 	// Hard capping image sizes for memory efficiency
 	/*

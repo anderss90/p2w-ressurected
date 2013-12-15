@@ -6,7 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.view.WindowManager;
 
 public class PainterThread extends Thread implements OnTapListener {
 	// Constants for debugging
@@ -72,9 +75,15 @@ public class PainterThread extends Thread implements OnTapListener {
 	private long scheduleInterval;
 	private long mlastLoopTime;
 	private long mCurrentTime;
+	
+	//Display
+	private Display mDisplay;
 	/*
 	 * Constructors
 	 */	
+	
+	
+	
 	PainterThread(SurfaceHolder surfaceHolder, Context ctx, boolean isPreview) {
 		// Bind supplied SurfaceHolder
 		mSurfaceHolder = surfaceHolder;
@@ -107,7 +116,8 @@ public class PainterThread extends Thread implements OnTapListener {
 		mDoubleTapTime = 200;
 		scheduleInterval=20;
 		
-				
+		//Display
+		mDisplay = ((WindowManager) mCtx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 				
 		
 	}
@@ -187,8 +197,15 @@ public class PainterThread extends Thread implements OnTapListener {
 			
 		}
 		if (mBackgroundBitmap!=null){
-			widthRatio = (float)2*mSurfaceWidth/mBackgroundBitmap.getWidth();
-			heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+			if (mDisplay.getHeight()<mDisplay.getWidth()) { // Landscape mode
+				widthRatio = (float)mSurfaceWidth/mBackgroundBitmap.getWidth();
+				heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+			}
+			else {
+				widthRatio = (float)2*mSurfaceWidth/mBackgroundBitmap.getWidth();
+				heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+			}
+			
 		}
 		
 		if(mBackgroundInit == INIT_AWAITING) {
@@ -350,13 +367,21 @@ public class PainterThread extends Thread implements OnTapListener {
     public void setSurfaceOffsets(float xOffset, float xOffsetStep, int xPixelOffset) {    	
     	//resumePainting();
     	
-    	mOffset = xOffset;
-    	mOffsetStep = xOffsetStep;
-    	mPixelOffset = xPixelOffset;
     	
-    	if(mSprite != null) {
-    		mSprite.doWallpaperScroll(xOffset, xOffsetStep, xPixelOffset, mSurfaceWidth);
+    	if (mDisplay.getHeight()<mDisplay.getWidth()) {
+		    // TODO: add logic for landscape mode here 
+			
+		}
+    	else{
+    		mOffset = xOffset;
+        	mOffsetStep = xOffsetStep;
+        	mPixelOffset = xPixelOffset;
+    		if(mSprite != null) {
+        		mSprite.doWallpaperScroll(xOffset, xOffsetStep, xPixelOffset, mSurfaceWidth);
+        	}
+    		
     	}
+    	
     	//Log.i(LOG, "Offset: " + Float.toString(xOffset) + ", PixelOffset: " + Integer.toString(xPixelOffset) + ", OffsetStep: " + Float.toString(xOffsetStep));
     }
     

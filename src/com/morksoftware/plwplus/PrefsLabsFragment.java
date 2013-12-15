@@ -276,8 +276,11 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 	 		}
 	    }
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
+	public void onSharedPreferenceChanged(SharedPreferences arg0, String key) {
 		// TODO Auto-generated method stub
+		if (key.equals("pref_premium_enabled")){
+			handleExtraFeatures();
+		}
 		
 	}
 	@Override
@@ -297,6 +300,11 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 		else if (preference==mPremiumButton){
 			if (mExtraFeaturesUnlocked){
 				Toast.makeText(getActivity(), "Premium is already Enabled", Toast.LENGTH_SHORT).show();
+				
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setData(Uri.parse("market://details?id=com.morksoftware.keytest"));
+				startActivity(intent);
+				
 				/*
 				mPrefs.setPremium(false);
 				mExtraFeaturesUnlocked=false;
