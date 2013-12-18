@@ -164,7 +164,7 @@ public class SpaceCoreSprite extends Sprite {
         DisplayMetrics dm = new DisplayMetrics();
 	    ((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         float xDpi = dm.xdpi;
-		mBaseSpeed = (float) (3*0.028*xDpi);
+		mBaseSpeed = (float) (6*0.028*xDpi);
         mPrefs = new PrefsHelper(ctx);
         
         onSharedPreferenceChanged();
@@ -174,6 +174,7 @@ public class SpaceCoreSprite extends Sprite {
 	@Override
 	public void onSharedPreferenceChanged(){
 		mMaxSpeed =(float) (mPrefs.getMovementSpeed()*mBaseSpeed*0.01);
+		mSpeed2=mMaxSpeed;
 		mEnableSound = mPrefs.getEnableSound();
 		mEnableTaps = mPrefs.getTapActionsEnabled();
 		//Log.i("Wheatlet_onsharedpref", Float.toString(mMaxSpeed) + ", " + Float.toString(mAccel));
@@ -350,7 +351,7 @@ public class SpaceCoreSprite extends Sprite {
         else if (mDirectionZ==false){
         	mPositionZ-=1;
         }
-        Log.i("SpaceCoreSprite updatePosZ"," mPosX: "+mPositionX+" mPosY: "+mPositionY+" mPosZ: "+mPositionZ+" mSpeed: "+mSpeed);
+        //Log.i("SpaceCoreSprite updatePosZ"," mPosX: "+mPositionX+" mPosY: "+mPositionY+" mPosZ: "+mPositionZ+" mSpeed: "+mSpeed);
     }
 	
 	private void updateAngleAndPositionZ() {
@@ -493,6 +494,8 @@ public class SpaceCoreSprite extends Sprite {
 	            //tapAnimation1(x,y);
 	            //tapAnimation2(x,y);
 	            tapAnimation3(x,y);
+	            //DEBUG
+	            Log.i("SpaceCore"," mScreenWidth: "+mScreenWidth+" mScreenHeigth: "+mScreenHeight);
 	            //tapAnimation4(x,y);
 	        }
 		}
@@ -613,8 +616,8 @@ public class SpaceCoreSprite extends Sprite {
 
     }
     private void speedControl () {
-        if((mPositionX + mSpriteWidth) < 0 || mPositionX > mScreenWidth ||
-                (mPositionY + mSpriteHeigth) < 0 || mPositionY > mScreenHeight) {
+        if((mPositionX + mSpriteWidth) < 0 || mPositionX > mScreenWidth+ mSpriteWidth ||
+                (mPositionY + mSpriteHeigth) < 0 || mPositionY > mScreenHeight+ mSpriteHeigth) {
             mSpeed = mMaxSpeed*4;
         }
 

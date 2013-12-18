@@ -181,9 +181,7 @@ public class PainterThread extends Thread implements OnTapListener {
 	 */
 	private void initResources() {		
 		// What shall we initialize?
-		if (mPrefs.getPremium()==false){
-			mPrefs.disablePremiumFeatures();
-		}
+		mPrefs.setPremiumFromUtils();
 		wallpaperMode = mPrefs.getWallpaperMode();
 		mBackgroundSource= mPrefs.getBackgroundSource();
 		
@@ -306,7 +304,8 @@ public class PainterThread extends Thread implements OnTapListener {
 	/*
 	 * Painting states
 	 */
-	public void resumePainting() {		
+	public void resumePainting() {	
+		mPrefs.setPremiumFromUtils();
 		// Check to see if we need a new background bitmap
 		if(mBackgroundInit == INIT_AWAITING) {
 			

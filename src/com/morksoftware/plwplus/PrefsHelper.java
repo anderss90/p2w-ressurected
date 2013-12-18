@@ -55,6 +55,7 @@ public class PrefsHelper {
 	}
 	public void setPremiumFromUtils(){
 		setPremium(Utils.keyIsInstalled(mCtx));
+		disablePremiumFeatures();
 	}
 	public void disablePremiumFeatures(){
 		if (getPremium()==false){
