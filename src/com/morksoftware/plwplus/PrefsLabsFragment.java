@@ -111,6 +111,9 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
     		if (mExtraFeaturesUnlocked==true){
         		mPremiumButton.setSummary("Premium is Enabled");
         	}
+    		else {
+    			mPremiumButton.setSummary(getString(R.string.pref_get_premium_summary));
+    		}
     	}
     	
     	
@@ -123,6 +126,10 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 	    		mEnableSoundButtonLabs.setSummary("This feature requires premium");
 	    		mEnableSoundButtonLabs.setEnabled(false);
 	    	}
+	    	else{
+	    		mEnableSoundButtonLabs.setEnabled(true);
+	    		mEnableSoundButtonLabs.setSummary(getString(R.string.pref_labs_sound_summary));
+	    	}
 	    	
     	}
     	if (mEnableSoundButtonSpace!=null){
@@ -131,7 +138,10 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 	    		mEnableSoundButtonSpace.setSummary("This feature requires premium");
 	    		mEnableSoundButtonSpace.setSelectable(false);
 	    	}
-	    	
+	    	else{
+	    		mEnableSoundButtonSpace.setEnabled(true);
+	    		mEnableSoundButtonSpace.setSummary("pref_space_sound_summary");
+	    	}
     	}
     }
     

@@ -78,6 +78,12 @@ public class PainterThread extends Thread implements OnTapListener {
 	
 	//Display
 	private Display mDisplay;
+	
+	// Preferences
+	private boolean mEnableWallpaperScrolling;
+	private boolean mIsLandscapeMode;
+	
+	
 	/*
 	 * Constructors
 	 */	
@@ -118,6 +124,9 @@ public class PainterThread extends Thread implements OnTapListener {
 		
 		//Display
 		mDisplay = ((WindowManager) mCtx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		
+		//Preferences
+		mEnableWallpaperScrolling=mPrefs.getEnableWallpaperScrolling();
 				
 		
 	}
@@ -181,9 +190,18 @@ public class PainterThread extends Thread implements OnTapListener {
 	 */
 	private void initResources() {		
 		// What shall we initialize?
+		//Preferences
 		mPrefs.setPremiumFromUtils();
 		wallpaperMode = mPrefs.getWallpaperMode();
 		mBackgroundSource= mPrefs.getBackgroundSource();
+		mEnableWallpaperScrolling=mPrefs.getEnableWallpaperScrolling();
+		if (mDisplay.getHeight()>mDisplay.getWidth()){
+			mIsLandscapeMode=false;
+		}
+		else {
+			mIsLandscapeMode=true;
+		}
+		
 		
 		if (mBackgroundSource.equals(mPrefs.PREF_BACKGROUND_SOURCE_INCLUDED)|| mPrefs.getPremium()==false){
 			mBackgroundID = mPrefs.getWallpaperBackgroundID();
@@ -195,7 +213,7 @@ public class PainterThread extends Thread implements OnTapListener {
 			
 		}
 		if (mBackgroundBitmap!=null){
-			if (mDisplay.getHeight()<mDisplay.getWidth()) { // Landscape mode
+			if (mIsLandscapeMode==true) { // Landscape mode
 				widthRatio = (float)mSurfaceWidth/mBackgroundBitmap.getWidth();
 				heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
 				mOffset=0;
@@ -270,6 +288,9 @@ public class PainterThread extends Thread implements OnTapListener {
 			
 			mBackgroundInit = INIT_AWAITING;
 			mSpriteInit = INIT_AWAITING;
+		}
+		else if(key.equals("pref_enable_wallpaper_scrolling")){
+			mEnableWallpaperScrolling=mPrefs.getEnableWallpaperScrolling();
 		}
 		if(mSprite!=null)mSprite.onSharedPreferenceChanged();
 	}
@@ -369,19 +390,15 @@ public class PainterThread extends Thread implements OnTapListener {
     	//resumePainting();
     	
     	
-    	if (mDisplay.getHeight()<mDisplay.getWidth()) {
-		    // TODO: add logic for landscape mode here 
-			
-		}
-    	else{
+    	if (mEnableWallpaperScrolling==true && mIsLandscapeMode==false) { //Not landscape mode
     		mOffset = xOffset;
         	mOffsetStep = xOffsetStep;
         	mPixelOffset = xPixelOffset;
     		if(mSprite != null) {
         		mSprite.doWallpaperScroll(xOffset, xOffsetStep, xPixelOffset, mSurfaceWidth);
         	}
-    		
-    	}
+			
+		}
     	
     	//Log.i(LOG, "Offset: " + Float.toString(xOffset) + ", PixelOffset: " + Integer.toString(xPixelOffset) + ", OffsetStep: " + Float.toString(xOffsetStep));
     }

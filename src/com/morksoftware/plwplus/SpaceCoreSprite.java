@@ -132,6 +132,7 @@ public class SpaceCoreSprite extends Sprite {
 		
 		mFrameCount = 28;
         mFrameCount2 = 29;
+        mCurrentFrame=0;
 		
 		mRandomGen = new Random();
 		

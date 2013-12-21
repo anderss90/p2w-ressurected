@@ -17,6 +17,12 @@
         android:entryValues="@array/pref_modes_entry_values"
         android:defaultValue="Labs" />
     
+    <CheckBoxPreference 
+        android:key="pref_enable_wallpaper_scrolling"
+        android:title="@string/pref_enable_wallpaper_scrolling_title"
+        android:summary="@string/pref_enable_wallpaper_scrolling_summary"
+        android:defaultValue="false"/>
+    
     <PreferenceCategory 
         android:title="@string/pref_category_labs"
         android:key="@string/pref_category_labs">

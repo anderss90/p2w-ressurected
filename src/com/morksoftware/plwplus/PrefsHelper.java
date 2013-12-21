@@ -42,6 +42,9 @@ public class PrefsHelper {
 		mCtx = ctx;
 	}
 	
+	public Boolean getEnableWallpaperScrolling(){
+		return mPrefs.getBoolean("pref_enable_wallpaper_scrolling",true);
+	}
 	public Boolean getPremium() {
 		return mPrefs.getBoolean("pref_premium_enabled", true);
 	}
