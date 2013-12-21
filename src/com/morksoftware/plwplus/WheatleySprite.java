@@ -112,6 +112,7 @@ public class WheatleySprite extends Sprite {
 	private String mWheatleySnapPosition;
 	private boolean mEnableSound;
 	private boolean mEnableRandomMovement;
+	private boolean mEnableRandomMovementY;
 	private int mRandomMovementInterval;
 	
 
@@ -149,7 +150,7 @@ public class WheatleySprite extends Sprite {
 		mSrcRect = new Rect(0,0,mSpriteWidth,mSpriteHeigth);
 		
 		mScreenWidth = screenWidth;
-        mScreenHeight = screenWidth;
+        mScreenHeight = screenHeight;
 		
 		DisplayMetrics dm = new DisplayMetrics();
 	    ((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
@@ -157,11 +158,11 @@ public class WheatleySprite extends Sprite {
 		// these will return the actual dpi horizontally and vertically
 		float xDpi = dm.xdpi;
 		
-		mBaseSpeed = (float) (3*0.028*xDpi);
+		mBaseSpeed = (float) (4*0.028*xDpi);
 		mAccel=(float) 0.5;
 		Log.i("MAX OG ACCEL", Float.toString(mMaxSpeed) + ", " + Float.toString(mAccel));
 		
-		mAccelZone = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedY) / (2*mAccel));
+		mAccelZone = (float) ((Math.pow(mMaxSpeed, 2)) / (2*mAccel));
 		
 		mDraw = true;
 		setNewPositionZ(0);
@@ -173,13 +174,17 @@ public class WheatleySprite extends Sprite {
         //get settings
         mPrefs = new PrefsHelper(ctx);
         onSharedPreferenceChanged();
+        mEnableRandomMovementY=false;
+        if (mScreenWidth>mScreenHeight){
+        	
+        }
         
 	}
 	@Override
 	public void onSharedPreferenceChanged(){
 		mWheatleySnapPosition= mPrefs.getWheatleySnapPosition();
 		mMaxSpeed=(float) (mPrefs.getMovementSpeed()*mBaseSpeed*0.01);
-		mAccel=(float)mMaxSpeed/14;
+		mAccel=(float)mMaxSpeed/10;
 		mEnableSound=mPrefs.getEnableSound();
 		mEnableRandomMovement=mPrefs.getEnableRandomMovement();
 		mRandomMovementInterval=mPrefs.getRandomMovementInterval()*1000;
@@ -313,11 +318,9 @@ public class WheatleySprite extends Sprite {
 	private void setNewPositionX(int newPosition, boolean override) {
 		if(override || (!mNeedPositionXChange  && !mNeedPositionZChange && mPositionY == mDownPositionY)) {
 			mNewPositionX = newPosition;
+			mLastPositionX = mPositionX;
 			mNeedPositionXChange = true;
 			
-			if(mSpeedX == WHEATLEY_MINIMUM_SPEED) {
-				//mLastPositionX = mPositionX;
-			}
 		}
 		else {
 			Log.i("setNewPositionX", "Threw away order!");
@@ -325,10 +328,11 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	private void setNewPositionZ(int newPosition) {
-		if(!mNeedPositionZChange && !mNeedPositionXChange && !mNeedPositionYChange) {
+		if(!mNeedPositionZChange && !mNeedPositionXChange) {
+			mLastPositionZ = mPositionZ;
 			mNewPositionZ = newPosition;
 			mNeedPositionZChange = true;
-			mLastPositionZ = mPositionZ;
+			
 		}
 		else {
 			Log.i("setNewPositionZ", "Threw away order!");
@@ -343,13 +347,11 @@ public class WheatleySprite extends Sprite {
 			if (mSpeedY<mMaxSpeed){
 				mSpeedY = mSpeedY + (mAccel);	
 			}
-			//Log.i("Wheatley", "�verste l�kke: " + Double.toString(mSpeedY) + ", Count: " + Integer.toString(i));
 		}
 		else if(((mNewPositionY - mAccelZone - mMaxSpeed) < mPositionY && mDirectionY) || ((mNewPositionY + mAccelZone + mMaxSpeed) > mPositionY && !mDirectionY)) {
 			if (mSpeedY<mMaxSpeed){
 				mSpeedY = mSpeedY - (mAccel);
 			}
-			//Log.i("Wheatley", "Nederste l�kke: " + Double.toString(mSpeedY) + ", Count: " + Integer.toString(j));
 		}
 		
 		if(mSpeedY < WHEATLEY_MINIMUM_SPEED) { 
@@ -378,35 +380,43 @@ public class WheatleySprite extends Sprite {
 	}
 	
 	private void updatePositionX() {	
-		mAccelZoneX = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedX) / (2*mAccel));
+		//Log.i("WheatleySprite","mAccelZoneX: "+mAccelZoneX+ " mAccel: "+mAccel);
+		mAccelZoneX = (float) ((Math.pow(mMaxSpeed, 2)) / (2*mAccel));
 		if(Math.abs(mNewPositionX - mLastPositionX) < (mAccelZoneX*2+mMaxSpeed) /*&& mSpeedX < 2*WHEATLEY_MINIMUM_SPEED DEBUG*/) {
 			mAccelZoneX = Math.abs((mNewPositionX+mMaxSpeed) - mLastPositionX)/2;
 		}
 		
 		if(((mNewPositionX - mAccelZoneX - mMaxSpeed) < mPositionX && mDirectionX) || ((mNewPositionX + mAccelZoneX + mMaxSpeed) > mPositionX && !mDirectionX)) {
 			mSpeedX = mSpeedX - (mAccel);
+			//Log.i("WheatleySprite","Slowing Down");
 		}		
 		else if(((mLastPositionX + mAccelZoneX) > mPositionX && mDirectionX) || ((mLastPositionX - mAccelZoneX) < mPositionX && !mDirectionX)) {
 			if(mSpeedX < mMaxSpeed) {				
 				mSpeedX = mSpeedX + (mAccel);		
+				//Log.i("WheatleySprite","Speeding Up");
 			}
 		}
-		
+		else {
+			//Log.i("WheatleySprite","I'm in a deadzone. HALP");
+		}
 		if(mSpeedX < WHEATLEY_MINIMUM_SPEED) { 
 			mSpeedX = WHEATLEY_MINIMUM_SPEED;
 		}			
 		
 		// Traverse Sprite in X direction		
+		
+		
+		// What to f does this do ??? Commented out weird stuff. Direction control works, but mLastPosition should not be set here. It never escapes minimum speed.
 		if(mNewPositionX > mPositionX && mSpeedX == WHEATLEY_MINIMUM_SPEED) {
 			if(!mDirectionX) {
-				mLastPositionX = mPositionX;
+				//mLastPositionX = mPositionX;
 			}
 			
 			mDirectionX = true;
 		}
 		else if(mNewPositionX < mPositionX && mSpeedX == WHEATLEY_MINIMUM_SPEED) {
 			if(mDirectionX) {
-				mLastPositionX = mPositionX;
+				//mLastPositionX = mPositionX;
 			}
 			
 			mDirectionX = false;
@@ -427,8 +437,7 @@ public class WheatleySprite extends Sprite {
 			if (mRandom && !mNeedPositionZChange && !mNeedPositionYChange) {
 				mRandom = false; 
 			}
-			mSpeedX = 1.0;
-			mAccelZoneX = (float) ((Math.pow(mMaxSpeed, 2) - mSpeedX) / (2*mAccel));		
+			//mSpeedX = 1.0;	
 		}	
 		mLastActivityTime = System.currentTimeMillis();
 	}
@@ -443,11 +452,9 @@ public class WheatleySprite extends Sprite {
 				if(mSpeedZ < mMaxSpeed) {				
 					mSpeedZ = mSpeedZ + (mAccel);		
 				}
-				//Log.i("Wheatley", "�verste l�kke: " + Double.toString(mSpeedZ));
 			}
 			else if(((mNewPositionZ - mAccelZone - mMaxSpeed) < mPositionZ && mDirectionZ) || ((mNewPositionZ + mAccelZone + mMaxSpeed) > mPositionZ && !mDirectionZ)) {
 				mSpeedZ = mSpeedZ - (mAccel);
-				//Log.i("Wheatley", "Nederste l�kke: " + Double.toString(mSpeedZ));
 			}
 		}		
 		
@@ -495,10 +502,10 @@ public class WheatleySprite extends Sprite {
 		else {
 			if(!mRandom && doStalker && (mOffsetX%mOffsetStepX == 0 || mPixelOffsetX % (mOffsetStepX * mScreenWidth) == 0) && mLastStalkerOffset != mOffsetX   && mPositionY == mDownPositionY) {
 				//Log.i("doStalker", "Stalking");
-				if(mPositionX <= 0+5 || (mPositionX <= mScreenWidth-5 && !mDirectionX)) {	
+				if(mPositionX <= 5 || (mPositionX <= mScreenWidth-5 && !mDirectionX)) {	
 					setNewPositionX(0, true);
 				}		
-				else if(mPositionX >= mScreenWidth-5 || (mPositionX >= 0+5 && mDirectionX)) {
+				else if(mPositionX >= mScreenWidth-5 || (mPositionX >= 5 && mDirectionX)) {
 					setNewPositionX(mScreenWidth-mSpriteWidth, true);
 				}
 				
@@ -545,10 +552,10 @@ public class WheatleySprite extends Sprite {
 	private void randomMovement()  {
 		int xy = mRandomGen.nextInt(4);
 		if (mPositionY == mDownPositionY){
-	        if (xy <3){
+	        if (xy <3 || !mEnableRandomMovementY){
 	            int n=1;
 	            if (mRandomGen.nextInt(2)==1){
-	                n = -n;
+	                n = -1;
 	            }
 	            int x=(int)((mRandomGen.nextFloat()*(mScreenWidth-mSpriteWidth)) + (mRandomGen.nextInt(2)*n*mScreenWidth));
 	
@@ -653,6 +660,7 @@ public class WheatleySprite extends Sprite {
                 //Log.i("move", "wheatley");
                 setNewPositionX(x - (mSpriteWidth/2), mRandom);
                 setNewPositionY(0,false);
+                setNewPositionZ(0);
             }
         }
 	}

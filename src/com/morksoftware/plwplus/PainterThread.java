@@ -198,11 +198,14 @@ public class PainterThread extends Thread implements OnTapListener {
 			if (mDisplay.getHeight()<mDisplay.getWidth()) { // Landscape mode
 				widthRatio = (float)mSurfaceWidth/mBackgroundBitmap.getWidth();
 				heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
+				mOffset=0;
 			}
 			else {
 				widthRatio = (float)2*mSurfaceWidth/mBackgroundBitmap.getWidth();
 				heightRatio = (float)mSurfaceHeight/mBackgroundBitmap.getHeight();
 			}
+
+			scalingFactor = Math.max(widthRatio, heightRatio);
 			
 		}
 		
@@ -293,7 +296,6 @@ public class PainterThread extends Thread implements OnTapListener {
 			*/
 			//Log.i("PainterThread","HR: "+Float.toString(heightRatio)+" WR: "+Float.toString(widthRatio)+
 					//" SF: "+scalingFactor+" mOffset: "+mOffset+" trans: "+translation);
-			scalingFactor = Math.max(widthRatio, heightRatio);
 			mScaleMatrix.setScale(scalingFactor, scalingFactor);
 			mScaleMatrix.postTranslate(translation,0);
 			c.drawBitmap(mBackgroundBitmap,mScaleMatrix, null);

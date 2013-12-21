@@ -339,7 +339,7 @@ private void debugMemoryUsage(){
 	float max = Debug.getNativeHeapSize() / 1024;
     float used = Debug.getNativeHeapAllocatedSize() / 1024;
     Log.i("MemoryUsage","Max:" + max + ", Used:" + used);
-    Toast.makeText(mCtx,"Max: " + Float.toString(max) + "Used: "+ used, Toast.LENGTH_LONG).show();
+    //Toast.makeText(mCtx,"Max: " + Float.toString(max) + "Used: "+ used, Toast.LENGTH_LONG).show();
 }
 
 

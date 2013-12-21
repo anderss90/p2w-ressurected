@@ -81,7 +81,7 @@
 	        android:dialogTitle="@string/pref_labs_random_movement_interval_dialog"
 	        android:entries="@array/pref_labs_random_movement_interval_entries"
 	        android:entryValues="@array/pref_labs_random_movement_interval_values"
-	        android:defaultValue="10" />
+	        android:defaultValue="3" />
 		
 		<CheckBoxPreference
         android:key="pref_labs_sound"

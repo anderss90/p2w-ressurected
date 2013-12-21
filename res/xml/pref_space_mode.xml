@@ -3,6 +3,10 @@
     <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="pref_screen_space">
         
+        <Preference
+        android:key="pref_get_premium"
+        android:title="@string/pref_get_premium_title"
+        android:summary="@string/pref_get_premium_summary" />
         
         <ListPreference
         android:key="pref_mode"
