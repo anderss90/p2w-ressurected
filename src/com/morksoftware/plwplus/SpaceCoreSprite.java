@@ -469,7 +469,7 @@ public class SpaceCoreSprite extends Sprite {
 	@Override
 	public void onSingleTap(int x, int y) {
 		if(mEnableTaps){
-			if(mDestRect.contains(x, y) && !mIsPlayingSound) {
+			if(mDestRect.contains(x, y) && !mIsPlayingSound && mEnableSound) {
 				mIsPlayingSound = true;
 				
 				Log.i("SpaceCoreSprite", "HIT!");

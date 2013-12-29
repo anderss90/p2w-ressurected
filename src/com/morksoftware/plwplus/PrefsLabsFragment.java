@@ -140,7 +140,7 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
 	    	}
 	    	else{
 	    		mEnableSoundButtonSpace.setEnabled(true);
-	    		mEnableSoundButtonSpace.setSummary("pref_space_sound_summary");
+	    		mEnableSoundButtonSpace.setSummary(getString(R.string.pref_space_sound_summary));
 	    	}
     	}
     }
