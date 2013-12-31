@@ -633,9 +633,9 @@ public class WheatleySprite extends Sprite {
                 mNeedPositionZChange=true;
 
                 Log.i("WheatleySprite", "HIT!");
-                int currentSound=mRandomGen.nextInt(mNumberOfSounds);
+                int currentSound=mRandomGen.nextInt(mNumberOfSounds-1);
                 while (currentSound==mPreviousSound){
-                	currentSound=mRandomGen.nextInt(mNumberOfSounds);
+                	currentSound=mRandomGen.nextInt(mNumberOfSounds-1);
                 }
                 mPreviousSound=currentSound;
                 MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[currentSound]);

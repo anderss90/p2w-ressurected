@@ -167,6 +167,18 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
     }
     
   
+    @Override
+    public void onDestroy(){
+    	super.onDestroy();
+    	  mPrefs.unregisterOnSharedPrefListener(this);  
+    }
+    
+    @Override 
+    public void onStop(){
+    	super.onStop();
+    	  mPrefs.unregisterOnSharedPrefListener(this);  
+    }
+    
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub

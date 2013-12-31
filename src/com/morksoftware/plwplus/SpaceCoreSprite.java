@@ -473,9 +473,9 @@ public class SpaceCoreSprite extends Sprite {
 				mIsPlayingSound = true;
 				
 				Log.i("SpaceCoreSprite", "HIT!");
-				int currentSound=mRandomGen.nextInt(mNumberOfSounds);
+				int currentSound=mRandomGen.nextInt(mNumberOfSounds-1);
                 while (currentSound==mPreviousSound){
-                	currentSound=mRandomGen.nextInt(mNumberOfSounds);
+                	currentSound=mRandomGen.nextInt(mNumberOfSounds-1);
                 }
                 mPreviousSound=currentSound;
 				MediaPlayer mp = MediaPlayer.create(mCtx, mSoundResources[currentSound]);
