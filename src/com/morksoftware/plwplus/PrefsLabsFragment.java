@@ -173,6 +173,11 @@ public class PrefsLabsFragment extends PreferenceFragment implements OnSharedPre
     	  mPrefs.unregisterOnSharedPrefListener(this);  
     }
     
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	  mPrefs.unregisterOnSharedPrefListener(this);  
+    }
     @Override 
     public void onStop(){
     	super.onStop();
