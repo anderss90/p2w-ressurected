@@ -612,7 +612,7 @@ public class WheatleySprite extends Sprite {
 		}	
 	}	
 	
-	private void doSingleTapOptionOne(int x, int y) {
+	private void doDoubleTapOptionOne(int x, int y) {
         mLastActivityTime = System.currentTimeMillis();
         if(!mDraw) {
             mDraw = true;
@@ -662,6 +662,7 @@ public class WheatleySprite extends Sprite {
                 setNewPositionY(0,false);
                 setNewPositionZ(0);
             }
+            
         }
 	}
 	
@@ -671,7 +672,7 @@ public class WheatleySprite extends Sprite {
 		
 	}
 	
-	private void doDoubleTapOptionOne(int x, int y) {
+	private void doSingleTapOptionOne(int x, int y) {
         mLastActivityTime = System.currentTimeMillis();
 
 		if(!mDraw) {
@@ -698,7 +699,13 @@ public class WheatleySprite extends Sprite {
 				}
 			}
 		}
-		else doSingleTapOptionOne(x, y);
+		else if(x != mPositionX && !mDestRect.contains(x, y)) {
+            //Log.i("move", "wheatley");
+            setNewPositionX(x - (mSpriteWidth/2), mRandom);
+            setNewPositionY(0,false);
+            setNewPositionZ(0);
+        }
+		//else doSingleTapOptionOne(x, y);
 	}
 	
 	private void doDoubleTapOptionTwo(int x, int y) {

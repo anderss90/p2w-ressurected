@@ -469,6 +469,20 @@ public class SpaceCoreSprite extends Sprite {
 	@Override
 	public void onSingleTap(int x, int y) {
 		if(mEnableTaps){
+	        if (mDestRect.contains(x, y)==false) {
+	            //tapAnimation1(x,y);
+	            //tapAnimation2(x,y);
+	            tapAnimation3(x,y);
+	            //DEBUG
+	            Log.i("SpaceCore"," mScreenWidth: "+mScreenWidth+" mScreenHeigth: "+mScreenHeight);
+	            //tapAnimation4(x,y);
+	        }
+		}
+    }
+	
+	@Override
+	public void onDoubleTap(int x, int y) {
+		if(mEnableTaps){
 			if(mDestRect.contains(x, y) && !mIsPlayingSound && mEnableSound) {
 				mIsPlayingSound = true;
 				
@@ -501,6 +515,7 @@ public class SpaceCoreSprite extends Sprite {
 	        }
 		}
     }
+	
 
     private void tapAnimation1 (int x, int y) {
         if (!mTapAnimation1)     {
@@ -566,11 +581,6 @@ public class SpaceCoreSprite extends Sprite {
         }
     }
 
-	@Override
-	public void onDoubleTap(int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}	
 
 	@Override
 	public void doWallpaperScroll(float xOffset, float xOffsetStep, int xPixelOffset, int screenWidth) {

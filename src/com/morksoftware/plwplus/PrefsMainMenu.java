@@ -22,8 +22,6 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
 	private Preference SpaceBackgroundSource;
 	private PrefsHelper mPrefs;
 	private PrefsLabsFragment labsFragment;
-	private PrefsSpaceFragment spaceFragment;
-	private PrefsMainFragment mainFragment;
 	private FragmentManager fragmentManager;
 	private FragmentTransaction fragmentTransaction;
 	private String pref_mode;
@@ -117,12 +115,15 @@ public class PrefsMainMenu extends FragmentActivity implements OnSharedPreferenc
     	if (modeFlag){
     		fragmentTransaction = fragmentManager.beginTransaction();
 	    	pref_mode = mPrefs.getWallpaperMode();
+	    	fragmentTransaction.replace(R.id.modeFragment,new PrefsLabsFragment());
+	    	/*
 			if(pref_mode.equals("Space")){
 				fragmentTransaction.replace(R.id.modeFragment,spaceFragment);
 	        }
 	        else if(pref_mode.equals("Labs"))  {
 	        	fragmentTransaction.replace(R.id.modeFragment,labsFragment);
 	        }
+	        */
 			fragmentTransaction.commitAllowingStateLoss();
 			modeFlag=false;
     	}
